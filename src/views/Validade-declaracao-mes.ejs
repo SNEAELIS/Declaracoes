@@ -35,6 +35,7 @@
             --success: #168821;
             --danger:  #e52207;
             --warning: #c05600;
+            --warning-bg: #fff5c2;
             --info:    #155bcb;
 
             /* Superfície e leitura */
@@ -78,11 +79,13 @@
             --gray-2:       #0c1a2b;
             --gray-5:       #13294a;
             --pure-0:       #102845;
+            --warning-bg:   rgba(255,205,7,.12);
             --shadow-1: 0 1px 3px rgba(0,0,0,.5);
             --shadow-2: 0 3px 8px rgba(0,0,0,.6);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        [hidden] { display: none !important; }
 
         html { font-size: 100%; }
         body {
@@ -250,11 +253,27 @@
             background-repeat: no-repeat; background-position: right 14px center; padding-right: 40px;
         }
 
+        .field-hint { display: block; font-size: .82rem; color: var(--text-muted); margin-top: 6px; }
+
         .error-message { display: none; color: var(--danger); font-size: .85rem; margin-top: 6px; }
         .error-message::before { content: '\f06a'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-right: 6px; }
         .form-group.invalid input,
         .form-group.invalid select { border-color: var(--danger); box-shadow: 0 0 0 1px var(--danger); }
         .form-group.invalid .error-message { display: block; animation: shake .3s ease; }
+
+        /* Mensagem de aviso padrão gov.br (br-message warning) */
+        .br-message {
+            display: flex; align-items: flex-start; gap: 12px;
+            padding: 14px 16px; margin-top: 8px;
+            border-radius: var(--radius); border-left: 4px solid var(--warning);
+            background: var(--warning-bg); color: var(--text); font-size: .92rem;
+        }
+        .br-message > i { color: var(--warning); font-size: 1.1rem; margin-top: 2px; flex: 0 0 auto; }
+        [data-theme="dark"] .br-message > i { color: var(--gold); }
+        [data-theme="dark"] .br-message { border-left-color: var(--gold); }
+        .br-message strong { font-weight: 700; }
+        .popup .br-message { text-align: left; margin: 0 0 18px; font-size: .88rem; }
+        .popup .br-message p { margin: 0; font-size: inherit; }
 
         /* Checkbox padrão gov.br */
         .checkbox-group { display: flex; flex-direction: column; gap: 12px; }
@@ -430,7 +449,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="cargo">Cargo <span class="req" aria-hidden="true">*</span></label>
-                                <select id="cargo" required>
+                                <select id="cargo" required aria-controls="cargoOutroRow">
                                     <option value="Governador(a)">Governador(a)</option>
                                     <option value="Secretário(a) de Estado">Secretário(a) de Estado</option>
                                     <option value="Subsecretário(a) de Esporte">Subsecretário(a) de Esporte</option>
@@ -440,9 +459,27 @@
                                     <option value="Secretário(a) Municipal">Secretário(a) Municipal</option>
                                     <option value="Presidente">Presidente</option>
                                     <option value="Comandante-Geral">Comandante-Geral</option>
+                                    <option value="Outros">Outros (especificar)</option>
                                 </select>
                                 <span class="error-message" aria-live="polite">Por favor, selecione um cargo.</span>
                             </div>
+                        </div>
+
+                        <!-- Campo livre exibido somente quando "Outros" for selecionado -->
+                        <div class="form-row" id="cargoOutroRow" hidden>
+                            <div class="form-group full-width">
+                                <label for="cargoOutro">Especifique o cargo <span class="req" aria-hidden="true">*</span></label>
+                                <input type="text" id="cargoOutro" maxlength="80" autocomplete="organization-title"
+                                       placeholder="Ex.: Superintendente, CEO, Diretor-Executivo, Chanceler"
+                                       aria-describedby="cargoOutroHint">
+                                <span class="field-hint" id="cargoOutroHint">Digite o cargo exatamente como constará na assinatura do documento.</span>
+                                <span class="error-message" aria-live="polite">Por favor, informe o cargo do responsável.</span>
+                            </div>
+                        </div>
+
+                        <div class="br-message warning" role="note">
+                            <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                            <p><strong>Atenção:</strong> o assinante das declarações deve ser, obrigatoriamente, o mesmo indicado como responsável no PDF do Termo de Referência.</p>
                         </div>
                     </section>
                     <div class="button-bar" style="justify-content: flex-end;">
@@ -550,6 +587,10 @@
         <h3 id="confTitle">Arquivos a serem baixados</h3>
         <p>Os seguintes documentos serão gerados:</p>
         <ul id="fileList"></ul>
+        <div class="br-message warning" role="note">
+            <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+            <p>Confirme que <strong id="assinanteResumo">o assinante</strong> é o mesmo responsável indicado no PDF do Termo de Referência.</p>
+        </div>
         <div class="btn-row">
             <button class="br-button secondary" id="cancelPopupBtn" type="button">Cancelar</button>
             <button class="br-button primary" id="confirmDownloadBtn" type="button"><i class="fa-solid fa-check" aria-hidden="true"></i> Ciente</button>
@@ -579,6 +620,9 @@
         const form = document.getElementById('declaracoesForm');
         const themeToggle = document.getElementById('themeToggle');
         const cnpjInput = document.getElementById('cnpj');
+        const cargoSelect = document.getElementById('cargo');
+        const cargoOutroRow = document.getElementById('cargoOutroRow');
+        const cargoOutroInput = document.getElementById('cargoOutro');
         const navButtons = document.querySelectorAll('.nav-button');
         const stepperItems = document.querySelectorAll('.stepper-item');
         const progress = document.querySelector('.stepper-progress');
@@ -685,6 +729,29 @@
             if (nextButton) nextButton.disabled = !isTabValid;
             return isTabValid;
         };
+
+        // --- Cargo "Outros": exibe campo de digitação livre ---
+        const getCargoInformado = () => {
+            if (cargoSelect.value === 'Outros') {
+                return cargoOutroInput.value.trim().replace(/\s+/g, ' ');
+            }
+            return cargoSelect.value;
+        };
+
+        const toggleCargoOutro = () => {
+            const isOutros = cargoSelect.value === 'Outros';
+            cargoOutroRow.hidden = !isOutros;
+            cargoOutroInput.required = isOutros;
+            if (isOutros) {
+                cargoOutroInput.focus();
+            } else {
+                cargoOutroInput.value = '';
+                cargoOutroInput.closest('.form-group').classList.remove('invalid');
+            }
+            validateTab('aba1');
+        };
+
+        cargoSelect.addEventListener('change', toggleCargoOutro);
 
         form.addEventListener('input', (e) => {
             if (e.target.hasAttribute('required')) {
@@ -1074,7 +1141,7 @@ const processarGeracaoPDFs = async () => {
     try {
         const dados = {
             nome: document.getElementById('nomeResponsavel')?.value.trim() || '',
-            cargo: document.getElementById('cargo')?.value || '',
+            cargo: getCargoInformado(),
             cnpj: document.getElementById('cnpj')?.value.trim() || '',
             cep: document.getElementById('cep')?.value.trim() || '',
             endereco: document.getElementById('endereco')?.value.trim() || '',
@@ -1083,6 +1150,12 @@ const processarGeracaoPDFs = async () => {
             nomeEstadoMunicipio: document.getElementById('nomeEstadoMunicipio')?.value.trim() || '',
             nomeEntidade: nomeEntidadeGlobal || document.getElementById('nomeEstadoMunicipio')?.value.trim() || ''
         };
+
+        if (!dados.cargo) {
+            showTab('aba1');
+            validateTab('aba1');
+            throw new Error('Informe o cargo do responsável na etapa "Responsável".');
+        }
 
         const configuracoes = {
             possuiAreaGestora: document.getElementById('possuiAreaGestora')?.checked || false,
@@ -1129,6 +1202,7 @@ const processarGeracaoPDFs = async () => {
         const cancelPopupBtn = document.getElementById('cancelPopupBtn');
 
         fileList.innerHTML = fileNames.map(name => `<li>${name}</li>`).join('');
+        document.getElementById('assinanteResumo').textContent = `${dados.nome} (${dados.cargo})`;
         confirmationPopup.classList.add('show');
         overlay.classList.add('show');
 
