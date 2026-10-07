@@ -770,30 +770,95 @@
             if (value.length === 18) fetchCNPJData(value.replace(/\D/g, ''));
         });
 
+        // --- Busca de CNPJ com fallback entre provedores ---
+        const PROVEDORES_CNPJ = [
+            {
+                nome: 'BrasilAPI',
+                url: (c) => `https://brasilapi.com.br/api/cnpj/v1/${c}`,
+                normalizar: (d) => ({
+                    razao: d.razao_social, cep: d.cep, logradouro: d.logradouro,
+                    numero: d.numero, bairro: d.bairro, municipio: d.municipio, uf: d.uf
+                })
+            },
+            {
+                nome: 'Minha Receita',
+                url: (c) => `https://minhareceita.org/${c}`,
+                normalizar: (d) => ({
+                    razao: d.razao_social, cep: d.cep, logradouro: d.logradouro,
+                    numero: d.numero, bairro: d.bairro, municipio: d.municipio, uf: d.uf
+                })
+            },
+            {
+                nome: 'CNPJ.ws',
+                url: (c) => `https://publica.cnpj.ws/cnpj/${c}`,
+                normalizar: (d) => {
+                    const e = d.estabelecimento || {};
+                    return {
+                        razao: d.razao_social, cep: e.cep,
+                        logradouro: [e.tipo_logradouro, e.logradouro].filter(Boolean).join(' '),
+                        numero: e.numero, bairro: e.bairro,
+                        municipio: e.cidade?.nome, uf: e.estado?.sigla
+                    };
+                }
+            }
+        ];
+
+        const camposEndereco = ['cep', 'endereco', 'cidadeUF', 'nomeEstadoMunicipio'];
+
+        const definirModoManual = (manual) => {
+            camposEndereco.forEach(id => {
+                const el = document.getElementById(id);
+                el.readOnly = !manual;
+                el.placeholder = manual ? 'Preencha manualmente' : 'Preenchido pelo CNPJ';
+            });
+        };
+
+        const buscarEmProvedores = async (cnpj) => {
+            for (const p of PROVEDORES_CNPJ) {
+                try {
+                    const resp = await fetch(p.url(cnpj), { signal: AbortSignal.timeout(8000) });
+                    if (resp.status === 404) continue;          // tenta o próximo
+                    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                    const dados = p.normalizar(await resp.json());
+                    if (dados.razao || dados.municipio) return dados;
+                } catch (err) {
+                    console.warn(`Falha no provedor ${p.nome}:`, err.message);
+                }
+            }
+            return null;
+        };
+
         const fetchCNPJData = async (cnpj) => {
             toggleLoading(true, 'Buscando dados do CNPJ...');
-            const errorSpan = cnpjInput.nextElementSibling;
-            try {
-                const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`);
-                if (!response.ok) throw new Error('CNPJ não encontrado ou inválido.');
-                const data = await response.json();
-                nomeEntidadeGlobal = data.razao_social || data.municipio || '';
-                document.getElementById('cep').value = data.cep?.replace(/(\d{5})(\d{3})/, '$1-$2') || '';
-                document.getElementById('endereco').value = `${data.logradouro || ''}, ${data.numero || ''}, ${data.bairro || ''}`.trim().replace(/^,|,$/g, '');
-                document.getElementById('cidadeUF').value = `${data.municipio || ''}/${data.uf || ''}`;
-                document.getElementById('nomeEstadoMunicipio').value = data.razao_social || data.municipio || '';
-            } catch (error) {
-                console.error('Erro ao buscar CNPJ:', error);
-                nomeEntidadeGlobal = '';
-                const formGroup = cnpjInput.closest('.form-group');
-                formGroup.classList.add('invalid');
-                errorSpan.textContent = error.message;
-                ['cep', 'endereco', 'cidadeUF', 'nomeEstadoMunicipio'].forEach(id => document.getElementById(id).value = '');
-            } finally {
-                toggleLoading(false);
-                validateTab('aba2');
-            }
-        };
+            const formGroup = cnpjInput.closest('.form-group');
+            const errorSpan = formGroup.querySelector('.error-message');
+            formGroup.classList.remove('invalid');
+
+    try {
+        const d = await buscarEmProvedores(cnpj);
+
+        if (!d) {
+            nomeEntidadeGlobal = '';
+            camposEndereco.forEach(id => document.getElementById(id).value = '');
+            definirModoManual(true);
+            formGroup.classList.add('invalid');
+            errorSpan.textContent = 'Não foi possível consultar o CNPJ agora. Preencha o endereço manualmente abaixo.';
+            document.getElementById('cep').focus();
+            return;
+        }
+
+        definirModoManual(false);
+        const cepLimpo = String(d.cep || '').replace(/\D/g, '');
+        nomeEntidadeGlobal = d.razao || d.municipio || '';
+        document.getElementById('cep').value = cepLimpo.replace(/(\d{5})(\d{3})/, '$1-$2');
+        document.getElementById('endereco').value = [d.logradouro, d.numero, d.bairro].filter(Boolean).join(', ');
+        document.getElementById('cidadeUF').value = `${d.municipio || ''}/${d.uf || ''}`;
+        document.getElementById('nomeEstadoMunicipio').value = d.razao || d.municipio || '';
+    } finally {
+        toggleLoading(false);
+        validateTab('aba2');
+    }
+};
 
         const toggleLoading = (show, text = 'Aguarde um momento...') => {
             const p = loadingMessage.querySelector('p');
@@ -1148,7 +1213,7 @@ const processarGeracaoPDFs = async () => {
             complemento: document.getElementById('complemento')?.value.trim() || '',
             cidadeUF: document.getElementById('cidadeUF')?.value.trim() || '',
             nomeEstadoMunicipio: document.getElementById('nomeEstadoMunicipio')?.value.trim() || '',
-            nomeEntidade: nomeEntidadeGlobal || document.getElementById('nomeEstadoMunicipio')?.value.trim() || ''
+            nomeEntidade: document.getElementById('nomeEstadoMunicipio')?.value.trim() || nomeEntidadeGlobal || ''
         };
 
         if (!dados.cargo) {
