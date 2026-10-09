@@ -645,7 +645,7 @@
                 <div class="input-container full-width">
                     <label for="adendoConvenio">Adendo ou documento comprobatório adicional (opcional – 1 arquivo)</label>
                     <div class="file-input-wrapper">
-                        <input type="file" id="adendoConvenio" accept="image/png,image/jpeg,application/pdf" onchange="toggleObservacoes(this); validateSingleFile(this)">
+                        <input type="file" id="adendoConvenio" accept="image/png,image/jpeg,application/pdf" onchange="validateSingleFile(this)">
                     </div>
                     <small style="color: #555;">PDF, PNG ou JPEG • Máx. 10 MB (PDF) ou 5 MB (imagem)</small>
                 </div>
@@ -1327,74 +1327,197 @@ function validateMixedFiles(input) {
 }
 
 // ------------------------------------------------
-// 14. Consulta CNPJ → BrasilAPI
+// 14. Consulta CNPJ → várias APIs com fallback
 // ------------------------------------------------
+async function fetchJsonComTimeout(url, ms = 8000) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), ms);
+    try {
+        const resp = await fetch(url, { signal: ctrl.signal });
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        return await resp.json();
+    } finally {
+        clearTimeout(timer);
+    }
+}
+
+const PROVEDORES_CNPJ = [
+    {
+        nome: 'BrasilAPI',
+        url: c => `https://brasilapi.com.br/api/cnpj/v1/${c}`,
+        normalizar: d => ({
+            razaoSocial: d.razao_social,
+            codNatureza: String(d.codigo_natureza_juridica || ''),
+            cep: d.cep,
+            logradouro: [d.descricao_tipo_de_logradouro, d.logradouro].filter(Boolean).join(' '),
+            numero: d.numero, complemento: d.complemento,
+            bairro: d.bairro, cidade: d.municipio, uf: d.uf
+        })
+    },
+    {
+        nome: 'CNPJá Open',
+        url: c => `https://open.cnpja.com/office/${c}`,
+        normalizar: d => ({
+            razaoSocial: d.company?.name,
+            codNatureza: String(d.company?.nature?.id || ''),
+            cep: d.address?.zip,
+            logradouro: d.address?.street,
+            numero: d.address?.number, complemento: d.address?.details,
+            bairro: d.address?.district, cidade: d.address?.city, uf: d.address?.state
+        })
+    },
+    {
+        nome: 'MinhaReceita',
+        url: c => `https://minhareceita.org/${c}`,
+        normalizar: d => ({
+            razaoSocial: d.razao_social,
+            codNatureza: String(d.codigo_natureza_juridica || ''),
+            cep: d.cep,
+            logradouro: [d.descricao_tipo_de_logradouro, d.logradouro].filter(Boolean).join(' '),
+            numero: d.numero, complemento: d.complemento,
+            bairro: d.bairro, cidade: d.municipio, uf: d.uf
+        })
+    },
+    {
+        nome: 'CNPJ.ws',
+        url: c => `https://publica.cnpj.ws/cnpj/${c}`,
+        normalizar: d => {
+            const e = d.estabelecimento || {};
+            return {
+                razaoSocial: d.razao_social,
+                codNatureza: String(d.natureza_juridica?.id || '').replace(/\D/g, ''),
+                cep: e.cep,
+                logradouro: [e.tipo_logradouro, e.logradouro].filter(Boolean).join(' '),
+                numero: e.numero, complemento: e.complemento,
+                bairro: e.bairro, cidade: e.cidade?.nome, uf: e.estado?.sigla
+            };
+        }
+    }
+];
+
+async function consultarCnpj(cnpj) {
+    const erros = [];
+    for (const p of PROVEDORES_CNPJ) {
+        try {
+            const dados = p.normalizar(await fetchJsonComTimeout(p.url(cnpj)));
+            if (dados.razaoSocial) {
+                console.log(`CNPJ obtido via ${p.nome}`);
+                return dados;
+            }
+            erros.push(`${p.nome}: resposta sem razão social`);
+        } catch (e) {
+            erros.push(`${p.nome}: ${e.message}`);
+        }
+    }
+    throw new Error('Nenhuma API respondeu.\n' + erros.join('\n'));
+}
+
 async function fetchEntityData() {
     const cnpjInput = document.getElementById('cnpj');
     const nomeEntidade = document.getElementById('nomeEntidade');
     const cepInput = document.getElementById('cep');
+    const enderecoInput = document.getElementById('endereco');
     const tipoAtestado = document.getElementById('tipoAtestado');
-    const avisoEntePublico = document.getElementById('avisoEntePublico');
-    
-    let cnpj = cnpjInput.value.replace(/\D/g, '');
-    
+    const aviso = document.getElementById('avisoEntePublico');
+
+    const cnpj = cnpjInput.value.replace(/\D/g, '');
     if (cnpj.length !== 14) return;
 
     nomeEntidade.value = 'Buscando dados...';
 
     try {
-        const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`);
-        if (!response.ok) throw new Error('CNPJ não encontrado.');
-        
-        const data = await response.json();
-        nomeEntidade.value = data.razao_social || 'Não encontrado';
-        cepInput.value = data.cep || '';
+        const d = await consultarCnpj(cnpj);
 
-        // Identifica se é Órgão Público (Naturezas que começam com 2)
-        const natureza = data.natureza_juridica || '';
-        const isEntePublico = natureza.startsWith('2'); 
+        nomeEntidade.value = d.razaoSocial;
+        nomeEntidade.readOnly = true;
+        cepInput.value = (d.cep || '').replace(/\D/g, '').replace(/^(\d{5})(\d{3})$/, '$1-$2');
 
-        if (isEntePublico && tipoAtestado.value === 'termoFomento') {
-            alert('Atenção: Municípios e Estados NÃO podem usar Termo de Fomento. Alterando para Convênio.');
-            tipoAtestado.value = 'convenio';
-            toggleFormFields();
-        } else if (!isEntePublico && tipoAtestado.value === 'convenio') {
-            // Opcional: Avisar que OSCs geralmente usam Fomento, mas permitir se quiserem
-            console.log('Entidade privada usando convênio.');
+        if (d.logradouro && d.cidade) {
+            enderecoInput.value = `${d.logradouro}, ${d.bairro || ''}, ${d.cidade} - ${d.uf || ''}`;
+            const numEl = document.getElementById('numero');
+            const compEl = document.getElementById('complemento');
+            if (!numEl.value && d.numero) numEl.value = d.numero;
+            if (!compEl.value && d.complemento) compEl.value = d.complemento;
+        } else if (d.cep) {
+            await fetchAddressData();
         }
 
-        if (data.cep) await fetchAddressData();
+        // Natureza jurídica 1xxx = Administração Pública
+        const isEntePublico = d.codNatureza.startsWith('1');
+        window.entidadeEhEntePublico = isEntePublico;
+        aviso.style.display = isEntePublico ? 'block' : 'none';
 
+        if (isEntePublico && tipoAtestado.value === 'termoFomento') {
+            alert('Atenção: Entes públicos NÃO podem usar Termo de Fomento. Alterando para Convênio.');
+            tipoAtestado.value = 'convenio';
+            toggleFormFields();
+        }
     } catch (err) {
-        nomeEntidade.value = '';
         console.error(err);
+        nomeEntidade.value = '';
+        nomeEntidade.readOnly = false;
+        nomeEntidade.placeholder = 'Digite o nome da entidade';
+        alert('Não foi possível consultar o CNPJ automaticamente.\nVerifique o número ou preencha o nome manualmente.');
     }
 }
+// ------------------------------------------------
+// 15. Consulta CEP → várias APIs com fallback
+// ------------------------------------------------
+const PROVEDORES_CEP = [
+    {
+        nome: 'BrasilAPI',
+        url: c => `https://brasilapi.com.br/api/cep/v2/${c}`,
+        normalizar: d => ({ logradouro: d.street, bairro: d.neighborhood, cidade: d.city, uf: d.state })
+    },
+    {
+        nome: 'ViaCEP',
+        url: c => `https://viacep.com.br/ws/${c}/json/`,
+        normalizar: d => {
+            if (d.erro) throw new Error('CEP inexistente');
+            return { logradouro: d.logradouro, bairro: d.bairro, cidade: d.localidade, uf: d.uf };
+        }
+    },
+    {
+        nome: 'OpenCEP',
+        url: c => `https://opencep.com/v1/${c}`,
+        normalizar: d => {
+            if (d.erro) throw new Error('CEP inexistente');
+            return { logradouro: d.logradouro, bairro: d.bairro, cidade: d.localidade, uf: d.uf };
+        }
+    }
+];
 
-// ------------------------------------------------
-// 15. Consulta CEP → BrasilAPI
-// ------------------------------------------------
 async function fetchAddressData() {
     const cepInput = document.getElementById('cep');
     const enderecoInput = document.getElementById('endereco');
-    let cep = cepInput.value.replace(/\D/g, '');
+    const cep = cepInput.value.replace(/\D/g, '');
+
     if (cep.length !== 8) {
         enderecoInput.value = '';
         return;
     }
-    enderecoInput.value = 'Buscando endereço...';
-    try {
-        const response = await fetch(`https://brasilapi.com.br/api/cep/v1/${cep}`);
-        if (!response.ok) throw new Error('Erro na consulta');
-        const data = await response.json();
-        enderecoInput.value = `${data.street || ''}, ${data.neighborhood || ''}, ${data.city || ''} - ${data.state || ''}`;
-        document.getElementById('numero').focus();
-    } catch (err) {
-        alert(`Erro ao consultar CEP: ${err.message}`);
-        enderecoInput.value = '';
-    }
-}
 
+    enderecoInput.value = 'Buscando endereço...';
+
+    for (const p of PROVEDORES_CEP) {
+        try {
+            const d = p.normalizar(await fetchJsonComTimeout(p.url(cep), 6000));
+            if (!d.cidade) throw new Error('resposta incompleta');
+            enderecoInput.value = `${d.logradouro || ''}, ${d.bairro || ''}, ${d.cidade} - ${d.uf || ''}`;
+            enderecoInput.readOnly = true;
+            console.log(`CEP obtido via ${p.nome}`);
+            document.getElementById('numero').focus();
+            return;
+        } catch (e) {
+            console.warn(`${p.nome} falhou: ${e.message}`);
+        }
+    }
+
+    enderecoInput.value = '';
+    enderecoInput.readOnly = false;
+    enderecoInput.placeholder = 'Digite o endereço manualmente';
+    alert('Não foi possível consultar o CEP. Preencha o endereço manualmente.');
+}
 // ------------------------------------------------
 // 16. Formata data para dd/mm/yyyy
 // ------------------------------------------------
@@ -1489,7 +1612,11 @@ async function generatePDF() {
     // 1. VALIDAÇÃO ESPECIAL: Termo de Fomento NÃO pode ser usado por ente público
     // ────────────────────────────────────────────────
 
-
+    if (isTermoFomento && window.entidadeEhEntePublico) {
+    alert('O CNPJ informado pertence a um ente público. Termo de Fomento não é permitido — selecione Convênio.');
+    tipoSelect.focus();
+    return;
+    }
     // ────────────────────────────────────────────────
     // 2. VALIDAÇÕES GERAIS (campos que sempre são obrigatórios)
     // ────────────────────────────────────────────────
