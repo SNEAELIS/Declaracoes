@@ -1,5 +1,7 @@
-FROM node:20
+FROM node:26.12.1-slim
 WORKDIR /app
-COPY . /app
-RUN npm install
+ENV NODE_ENV=production
+COPY package*.json ./
+RUN npm ci --omit=dev
+COPY . .
 CMD ["node", "src/app.js"]
