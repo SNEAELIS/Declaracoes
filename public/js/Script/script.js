@@ -21,6 +21,7 @@ const declarations = [
     'CIÊNCIA DOS DEVERES E RESPONSABILIDADES IMPOSTOS PELA LEGISLAÇÃO ELEITORAL',
     'INEXISTÊNCIA DE NEPOTISMO E VEDAÇÕES À DESTINAÇÃO E EXECUÇÃO DE EMENDAS PARLAMENTARES',
     'CIÊNCIA DAS VEDAÇÕES APLICÁVEIS EM ANO ELEITORAL',
+    'CIÊNCIA E COMPROMISSO COM A TRANSPARÊNCIA NA CONTRATAÇÃO DE RECURSOS HUMANOS', // NOVA
 ];
 
 // -----------------------------------------------------------------------------
@@ -32,8 +33,8 @@ function formatDate() {
 }
 
 function numToWords(n) {
-    const units = ['','um','dois','três','quatro','cinco','seis','sete','oito','nove','dez','onze','doze','treze','quatorze','quinze'];
-    return n <= 15 ? units[n] : String(n);
+    const units = ['','um','dois','três','quatro','cinco','seis','sete','oito','nove','dez','onze','doze','treze','quatorze','quinze','dezesseis','dezessete','dezoito','dezenove','vinte'];
+    return n <= 20 ? units[n] : String(n);
 }
 
 const cmToPoints = (cm) => cm * 28.3465;
@@ -134,6 +135,13 @@ function getDeclarationBody(title, f) {
             `8. Que tenho ciência de que eventual descumprimento das normas aplicáveis poderá ensejar, conforme o caso, suspensão de atos, glosa de despesas, devolução de recursos, rescisão da parceria, instauração de tomada de contas especial, responsabilização administrativa, civil e eleitoral dos envolvidos, sem prejuízo de outras medidas cabíveis; \n`,
             `9. Que, durante a execução da parceria, a entidade observará integralmente a legislação de regência, inclusive as normas relativas às transferências voluntárias e parcerias com a Administração Pública, bem como todas orientações expedidas pelos órgãos competentes de controle, assessoramento jurídico e Justiça Eleitoral. \n\n`,
             `Por ser expressão da verdade, firmo a presente declaração.`
+        ],
+        // ---------------------------------------------------------------------
+        // NOVA DECLARAÇÃO
+        // ---------------------------------------------------------------------
+        'CIÊNCIA E COMPROMISSO COM A TRANSPARÊNCIA NA CONTRATAÇÃO DE RECURSOS HUMANOS': [
+            `Eu, ${dirigente}, na qualidade de ${cargoDirigente} do(a) ${entidade}, inscrita no CNPJ sob o nº ${cnpj}, declaro, para os devidos fins, estar ciente da necessidade de observar critérios objetivos e transparentes nos procedimentos de seleção e contratação de profissionais custeados com recursos da parceria.\n\n`,
+            `Comprometo-me, ainda, a manter devidamente documentados os procedimentos realizados, incluindo os critérios adotados e as justificativas das escolhas, bem como a apresentar essas informações e os respectivos documentos à unidade responsável pelo acompanhamento e fiscalização da parceria, quando solicitados, durante sua execução.`
         ],
     };
 
