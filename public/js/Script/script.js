@@ -18,9 +18,7 @@ const declarations = [
     'COMPROMISSO',
     'CUSTOS',
     'ADIMPLÊNCIA',
-    'CIÊNCIA DOS DEVERES E RESPONSABILIDADES IMPOSTOS PELA LEGISLAÇÃO ELEITORAL',
     'INEXISTÊNCIA DE NEPOTISMO E VEDAÇÕES À DESTINAÇÃO E EXECUÇÃO DE EMENDAS PARLAMENTARES',
-    'CIÊNCIA DAS VEDAÇÕES APLICÁVEIS EM ANO ELEITORAL',
     'CIÊNCIA E COMPROMISSO COM A TRANSPARÊNCIA NA CONTRATAÇÃO DE RECURSOS HUMANOS', // NOVA
 ];
 
@@ -102,9 +100,6 @@ function getDeclarationBody(title, f) {
         'ADIMPLÊNCIA': [
             `Eu, ${dirigente}, na condição de ${cargoDirigente} da ${entidade}, inscrita no CNPJ sob o nº ${cnpj}, declaro, no uso das atribuições que me foram delegadas e sob as penas da lei, que a presente Entidade: Não está inadimplente com a União, inclusive no que tange às contribuições de que tratam os artigos 195 e 239 da Constituição Federal (contribuições dos empregados para a seguridade social, contribuições para o PIS/PASEP e contribuições para o FGTS), com relação a recursos anteriormente recebidos da Administração Pública Federal, por meio de convênios, contratos, acordos, ajustes, subvenções sociais, contribuições, auxílios e similares.`,
         ],
-        'CIÊNCIA DOS DEVERES E RESPONSABILIDADES IMPOSTOS PELA LEGISLAÇÃO ELEITORAL': [
-            `Eu, ${dirigente}, na condição de ${cargoDirigente} da ${entidade}, inscrita no CNPJ sob nº ${cnpj}, Declaro, sob as penas da lei e passível de devolução dos recursos do Termo de Fomento nº ${proposta}:\n\n1. Estar ciente das condutas vedadas aos agentes públicos durante o período do defeso eleitoral, de acordo com disposto no caput do art. 73 da Lei nº 9.504 de 1997;\n2. Estar ciente de que as condutas vedadas dispensam comprovação de dolo ou culpa, sendo cláusulas de responsabilidade objetiva;\n3. Que a presente Entidade não possui dentro do quadro de dirigentes candidatos ao pleito eleitoral;\n4. Que não será permitido no âmbito do Termo de Fomento nº ${proposta} a distribuição de brindes ou outros bens que possam proporcionar vantagem ao eleitor durante o período de campanha eleitoral;\n5. Que não será permitido o uso promocional em favor de candidatos, partidos políticos ou coligações, na distribuição de bens e serviços de caráter social custeados pelo Termo de Fomento nº ${proposta};\n6. Que não será permitida qualquer promoção pessoal ou condutas que afetem a igualdade de oportunidades entre candidatos nos pleitos eleitorais;\n7. Que não será realizada publicidade institucional de atos, programas, obras, serviços e campanhas dos órgãos públicos federais;\n8. Estar ciente do inteiro teor da Cartilha de Condutas Vedadas aos Agentes Públicos Federais em Eleições, disponível no site do governo.\n\nPor ser expressão da verdade, firmo a presente declaração.`,
-        ],
         'INEXISTÊNCIA DE NEPOTISMO E VEDAÇÕES À DESTINAÇÃO E EXECUÇÃO DE EMENDAS PARLAMENTARES': [
             `${entidade}, inscrita no CNPJ sob o nº ${cnpj}, com sede em ${endereco}, por intermédio de seu representante legal abaixo assinado, o(a) Sr.(a) ${dirigente}, na condição de ${cargoDirigente}, para fins de celebração de Termo de Fomento no âmbito do Ministério do Esporte - MESP, DECLARA, sob as penas da lei:\n\n`,
             `1. Que a entidade não possui, em seus quadros diretivos e administrativos, pessoas que sejam cônjuges, companheiros ou parentes, em linha reta, colateral ou por afinidade, até o terceiro grau, inclusive:\n`,
@@ -114,27 +109,6 @@ function getDeclarationBody(title, f) {
             `3. Que a entidade se compromete a não realizar contratações, subcontratações ou intermediações de pessoas físicas ou jurídicas que possuam, em seu quadro de sócios, dirigentes, prestadores de serviço ou fornecedores de bens, as pessoas mencionadas no item "1", visando garantir que nenhum destes seja o beneficiário final do recurso público.\n\n`,
             `4. Que a entidade possui plena autonomia administrativa e financeira e que os recursos recebidos serão executados estritamente para o objeto pactuado, observando-se os princípios da impessoalidade e moralidade.\n\n`,
             `A presente declaração é a expressão da verdade e a entidade assume total responsabilidade pela veracidade destas informações, ciente de que a falsidade poderá acarretar a rescisão imediata da parceria e a aplicação de sanções administrativas e penais cabíveis.`
-        ],
-        'CIÊNCIA DAS VEDAÇÕES APLICÁVEIS EM ANO ELEITORAL': [
-            `Eu, ${dirigente}, na qualidade de representante legal da ${entidade}, inscrita no CNPJ nº ${cnpj}, para fins de celebração e/ou execução de Termo de Fomento/Termo de Colaboração com o Ministério do Esporte, por intermédio da SNEAELIS DECLARO, sob as penas da lei:\n\n`,
-            `1. Que a Entidade não possui dentro do quadro de dirigentes candidatos ao pleito eleitoral, bem como não permitirá o uso promocional em favor de candidatos, partidos políticos ou coligações, no decorrer das suas atividades, publicações e demais atos administrativos;\n`,
-            `2. Que tenho ciência de que a execução de recursos públicos e a atuação da entidade em parceria com a Administração Pública devem observar, no geral, e especialmente em ano eleitoral, os princípios da legalidade, impessoalidade, moralidade, publicidade e eficiência, bem como as normas eleitorais, especialmente aquelas destinadas a resguardar a igualdade de oportunidades entre candidatas e candidatos;\n`,
-            `3. Que tenho ciência de que, embora a entidade privada não se equipare, em todos os aspectos, ao ente público destinatário das vedações específicas do art. 73 da Lei nº 9.504, de 30 de setembro de 1997, sua atuação no âmbito da parceria com o Poder Público deve abster-se de qualquer conduta que possa:\n`,
-            `   a. caracterizar uso indevido, desvio de finalidade ou aplicação promocional de bens, valores, materiais, serviços ou recursos públicos; \n`,
-            `   b. promover, favorecer ou prejudicar candidatura, partido político, federação ou coligação;\n`,
-            `   c. comprometer a neutralidade, a impessoalidade e a finalidade pública da ação apoiada com recursos da União;\n`,
-            `   d. ensejar apuração por abuso de poder político ou econômico, desvio de finalidade, improbidade administrativa ou infração eleitoral, na forma da legislação aplicável;\n`,
-            `4. Que tenho ciência de que é vedada a utilização da parceria, de seu objeto, de suas entregas, de eventos, de bens adquiridos, de serviços contratados, de material de divulgação, de redes sociais, de sítios eletrônicos, de marcas institucionais ou de qualquer outra estrutura vinculada ao ajuste para fins de promoção pessoal de agentes públicos, pré-candidatos, candidatos ou terceiros politicamente vinculados;\n`,
-            `5. Que me comprometo a não utilizar nem permitir que sejam utilizados recursos públicos federais transferidos à entidade para:\n`,
-            `   a. distribuição gratuita de bens, valores ou benefícios com finalidade eleitoral;\n`,
-            `   b. realização de propaganda eleitoral ou divulgação com conteúdo eleitoral;\n`,
-            `   c. promoção de autoridades públicas, parlamentares, candidatos ou partidos políticos;\n`,
-            `   d. associação da execução do objeto da parceria a candidaturas, slogans, cores, símbolos, nomes, imagens ou mensagens que possam caracterizar promoção eleitoral indevida;\n`,
-            `6. Que tenho ciência de que toda comunicação institucional, divulgação de resultados, publicidade de ações, eventos, publicações, peças visuais, manifestações em mídia, internet ou redes sociais relacionadas ao instrumento celebrado deverá possuir caráter estritamente informativo, educativo ou de orientação social, vedada a inserção de nomes, símbolos, imagens ou expressões que caracterizem promoção pessoal ou eleitoral, em observância ao § 1º do art. 37 da Constituição Federal e à legislação eleitoral pertinente;\n`,
-            `7. Que me comprometo a orientar dirigentes, empregados, colaboradores, prepostos, contratados e demais pessoas que atuem em nome da entidade quanto à necessidade de observância das vedações aplicáveis em ano eleitoral, prevenindo condutas que possam comprometer a regularidade da parceria e a lisura do processo eleitoral;\n`,
-            `8. Que tenho ciência de que eventual descumprimento das normas aplicáveis poderá ensejar, conforme o caso, suspensão de atos, glosa de despesas, devolução de recursos, rescisão da parceria, instauração de tomada de contas especial, responsabilização administrativa, civil e eleitoral dos envolvidos, sem prejuízo de outras medidas cabíveis; \n`,
-            `9. Que, durante a execução da parceria, a entidade observará integralmente a legislação de regência, inclusive as normas relativas às transferências voluntárias e parcerias com a Administração Pública, bem como todas orientações expedidas pelos órgãos competentes de controle, assessoramento jurídico e Justiça Eleitoral. \n\n`,
-            `Por ser expressão da verdade, firmo a presente declaração.`
         ],
         // ---------------------------------------------------------------------
         // NOVA DECLARAÇÃO
@@ -354,7 +328,7 @@ async function generatePdfDocDefinition(orderedDeclarations, letterheadFile, lay
 // -----------------------------------------------------------------------------
 // generateAllDeclarationsPDF — chamada pelo botão "Gerar Declarações"
 // -----------------------------------------------------------------------------
-async function generateAllDeclarationsPDF(orderedDeclarations, layoutOptions, formData) {
+async function generateAllDeclarationsÍPDF(orderedDeclarations, layoutOptions, formData) {
     const bgImage  = await getBase64Image(LETTERHEAD_URL);
     const doc      = buildDocDefinition(orderedDeclarations, formData, bgImage, layoutOptions);
     const entNome  = (formData.entidade || 'Entidade').replace(/\s+/g, '_').substring(0, 40);
