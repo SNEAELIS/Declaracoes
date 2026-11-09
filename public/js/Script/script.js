@@ -328,7 +328,7 @@ async function generatePdfDocDefinition(orderedDeclarations, letterheadFile, lay
 // -----------------------------------------------------------------------------
 // generateAllDeclarationsPDF — chamada pelo botão "Gerar Declarações"
 // -----------------------------------------------------------------------------
-async function generateAllDeclarationsÍPDF(orderedDeclarations, layoutOptions, formData) {
+async function generateAllDeclarationsPDF(orderedDeclarations, layoutOptions, formData) {  
     const bgImage  = await getBase64Image(LETTERHEAD_URL);
     const doc      = buildDocDefinition(orderedDeclarations, formData, bgImage, layoutOptions);
     const entNome  = (formData.entidade || 'Entidade').replace(/\s+/g, '_').substring(0, 40);
