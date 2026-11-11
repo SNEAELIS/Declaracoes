@@ -17,28 +17,23 @@
     <style>
         /* ============================================================
            TOKENS — Design System do Governo Federal (gov.br / DSGov)
-           Paleta Blue Warm Vivid, cinzas e cores de feedback oficiais.
-           Conformidade de contraste mínima AA (WCAG 2.1).
            ============================================================ */
         :root {
-            /* Marca / interativo */
             --blue-90: #051d41;
             --blue-80: #0c326f;
-            --blue-70: #1351b4;   /* cor primária da identidade do Governo Federal */
+            --blue-70: #1351b4;
             --blue-60: #155bcb;
             --blue-50: #2670e8;
             --blue-20: #c5d4eb;
             --blue-10: #e8eefa;
-            --gold:    #ffcd07;    /* amarelo de destaque/foco gov.br */
+            --gold:    #ffcd07;
 
-            /* Feedback */
             --success: #168821;
             --danger:  #e52207;
             --warning: #c05600;
             --warning-bg: #fff5c2;
             --info:    #155bcb;
 
-            /* Superfície e leitura */
             --pure-0:   #ffffff;
             --gray-2:   #f8f8f8;
             --gray-5:   #f0f0f0;
@@ -46,9 +41,8 @@
             --gray-20:  #cccccc;
             --gray-40:  #9e9e9e;
             --gray-60:  #666666;
-            --gray-80:  #333333;   /* texto sobre fundo claro */
+            --gray-80:  #333333;
 
-            /* Semânticos da aplicação */
             --bg:            var(--gray-2);
             --surface:       var(--pure-0);
             --text:          var(--gray-80);
@@ -100,7 +94,6 @@
 
         a { color: var(--accent); }
 
-        /* Foco visível e padronizado (acessibilidade / eMAG) */
         a:focus-visible,
         button:focus-visible,
         input:focus-visible,
@@ -111,7 +104,11 @@
             border-radius: 4px;
         }
 
-        /* Pular para o conteúdo */
+        .sr-only {
+            position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+            overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+        }
+
         .skip-link {
             position: absolute; left: -999px; top: 0; z-index: 2000;
             background: var(--accent); color: #fff; padding: 10px 16px;
@@ -187,7 +184,7 @@
         }
         [data-theme="dark"] .card-head .tag { background: rgba(90,139,221,.18); border-color: transparent; }
 
-        /* ===================== STEPPER (passo a passo) ===================== */
+        /* ===================== STEPPER ===================== */
         .stepper-nav { margin-bottom: 36px; }
         .stepper-wrapper { display: flex; justify-content: space-between; position: relative; }
         .stepper-wrapper::before {
@@ -232,11 +229,10 @@
         .form-group { flex: 1; min-width: 240px; margin-bottom: 14px; }
         .full-width { flex-basis: 100%; }
 
-        /* Campo de texto / select padrão gov.br */
         label {
             display: block; font-size: .9rem; font-weight: 600; color: var(--text); margin-bottom: 8px;
         }
-        label .req { color: var(--danger); margin-left: 2px; }
+        label .req, .req { color: var(--danger); margin-left: 2px; }
         input[type="text"], select {
             width: 100%; height: 44px; padding: 0 14px;
             background: var(--surface); color: var(--text);
@@ -253,7 +249,7 @@
             background-repeat: no-repeat; background-position: right 14px center; padding-right: 40px;
         }
 
-        .field-hint { display: block; font-size: .82rem; color: var(--text-muted); margin-top: 6px; }
+        .field-hint { display: block; font-size: .82rem; color: var(--text-muted); margin-top: 6px; font-weight: 400; }
 
         .error-message { display: none; color: var(--danger); font-size: .85rem; margin-top: 6px; }
         .error-message::before { content: '\f06a'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-right: 6px; }
@@ -261,7 +257,7 @@
         .form-group.invalid select { border-color: var(--danger); box-shadow: 0 0 0 1px var(--danger); }
         .form-group.invalid .error-message { display: block; animation: shake .3s ease; }
 
-        /* Mensagem de aviso padrão gov.br (br-message warning) */
+        /* Mensagens padrão gov.br */
         .br-message {
             display: flex; align-items: flex-start; gap: 12px;
             padding: 14px 16px; margin-top: 8px;
@@ -272,6 +268,12 @@
         [data-theme="dark"] .br-message > i { color: var(--gold); }
         [data-theme="dark"] .br-message { border-left-color: var(--gold); }
         .br-message strong { font-weight: 700; }
+        .br-message ul { margin: 6px 0 0 18px; }
+        .br-message li { margin-bottom: 4px; }
+        .br-message.info { border-left-color: var(--info); background: var(--blue-10); }
+        .br-message.info > i { color: var(--info); }
+        [data-theme="dark"] .br-message.info { background: rgba(90,139,221,.12); border-left-color: var(--accent); }
+        [data-theme="dark"] .br-message.info > i { color: var(--accent); }
         .popup .br-message { text-align: left; margin: 0 0 18px; font-size: .88rem; }
         .popup .br-message p { margin: 0; font-size: inherit; }
 
@@ -289,6 +291,47 @@
         }
         .checkbox-item label { margin: 0; font-weight: 500; font-size: .95rem; cursor: pointer; }
 
+        /* ===================== UPLOAD DE ANEXOS (PDF) ===================== */
+        .upload-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px; margin-top: 18px;
+        }
+        .upload-group { margin: 0; min-width: 0; }
+        .upload-title { display: block; font-size: .95rem; font-weight: 700; color: var(--text); }
+        .subitem {
+            display: inline-block; background: var(--accent); color: #fff;
+            font-size: .8rem; font-weight: 700; border-radius: 100px;
+            padding: 1px 10px; margin-right: 6px; vertical-align: 1px;
+        }
+        .dropzone {
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+            margin: 12px 0 0; padding: 24px 16px; text-align: center; cursor: pointer;
+            border: 2px dashed var(--gray-40); border-radius: var(--radius);
+            background: var(--gray-2); font-weight: 500; font-size: .92rem;
+            transition: border-color .2s, background .2s;
+        }
+        .dropzone i { font-size: 1.8rem; color: var(--accent); margin-bottom: 4px; }
+        .dropzone small { color: var(--text-muted); font-size: .8rem; }
+        .dropzone:hover, .dropzone.dragover { border-color: var(--accent); background: var(--blue-10); }
+        [data-theme="dark"] .dropzone:hover, [data-theme="dark"] .dropzone.dragover { background: rgba(90,139,221,.12); }
+        .sr-only:focus-visible + .dropzone { box-shadow: var(--focus); }
+        .form-group.invalid .dropzone { border-color: var(--danger); }
+
+        .file-preview {
+            display: flex; align-items: center; gap: 12px; margin-top: 12px; padding: 10px;
+            border: 1px solid var(--border); border-left: 4px solid var(--success);
+            border-radius: var(--radius); background: var(--surface);
+        }
+        .file-preview img {
+            width: 58px; max-height: 80px; object-fit: contain; flex: 0 0 auto;
+            border: 1px solid var(--border); background: #fff;
+        }
+        .file-preview .meta { flex: 1; min-width: 0; font-size: .86rem; }
+        .file-preview .meta strong { display: block; word-break: break-all; }
+        .file-preview .meta span { display: block; color: var(--text-muted); }
+        .file-preview .meta .ok { color: var(--success); font-weight: 600; }
+        .file-preview .acoes { display: flex; flex-direction: column; gap: 6px; flex: 0 0 auto; }
+
         /* Botões padrão gov.br */
         .button-bar {
             display: flex; justify-content: space-between; gap: 14px;
@@ -300,6 +343,7 @@
             font-family: var(--font-base); font-size: .95rem; font-weight: 600; letter-spacing: .2px;
             cursor: pointer; transition: all .2s ease; white-space: nowrap;
         }
+        .br-button.small { height: 32px; padding: 0 14px; font-size: .82rem; }
         .br-button.primary { background: var(--accent); color: #fff; }
         .br-button.primary:hover:not(:disabled) { background: var(--accent-hover); transform: translateY(-1px); box-shadow: var(--shadow-2); }
         .br-button.secondary { background: transparent; color: var(--accent); border-color: var(--accent); }
@@ -322,7 +366,8 @@
             position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(.95);
             background: var(--surface); color: var(--text); border-radius: var(--radius);
             box-shadow: var(--shadow-2); border-top: 4px solid var(--accent);
-            padding: 28px 36px; text-align: center; z-index: 1002; max-width: 92vw; width: 460px;
+            padding: 28px 36px; text-align: center; z-index: 1002; max-width: 92vw; width: 480px;
+            max-height: 92vh; overflow-y: auto;
             opacity: 0; visibility: hidden; transition: opacity .3s, transform .3s, visibility .3s;
         }
         .popup.show, .overlay.show, .loading-overlay.show { opacity: 1; visibility: visible; }
@@ -335,6 +380,7 @@
             font-size: .92rem; padding: 10px 12px 10px 36px; position: relative;
             background: var(--gray-5); border-radius: 6px; margin-bottom: 8px; word-break: break-all;
         }
+        #fileList li small { display: block; margin-top: 4px; color: var(--text-muted); word-break: normal; font-size: .82rem; }
         #fileList li::before {
             content: '\f1c1'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
             position: absolute; left: 12px; top: 10px; color: var(--accent);
@@ -369,6 +415,8 @@
             .step-name { font-size: .72rem; }
             .step-counter { width: 38px; height: 38px; font-size: .95rem; }
             .stepper-wrapper::before, .stepper-progress { top: 18px; }
+            .file-preview { flex-wrap: wrap; }
+            .file-preview .acoes { flex-direction: row; width: 100%; }
         }
     </style>
 </head>
@@ -465,7 +513,6 @@
                             </div>
                         </div>
 
-                        <!-- Campo livre exibido somente quando "Outros" for selecionado -->
                         <div class="form-row" id="cargoOutroRow" hidden>
                             <div class="form-group full-width">
                                 <label for="cargoOutro">Especifique o cargo <span class="req" aria-hidden="true">*</span></label>
@@ -561,6 +608,59 @@
                             <!-- Preenchido dinamicamente conforme a origem do recurso -->
                         </div>
                     </section>
+
+                    <!-- ANEXOS DA DECLARAÇÃO DE PRECATÓRIOS (exibido quando NÃO houver certidões TJ/TRT/TRF) -->
+                    <section class="section" id="anexosPrecatoriosSection" aria-labelledby="anexosTitulo" hidden>
+                        <h2 id="anexosTitulo">Anexos da declaração de precatórios judiciais</h2>
+                        <p class="helper">
+                            Como o município <strong>não apresentará</strong> as certidões do TJ, do TRT e do TRF, a Declaração de
+                            Regularidade no Pagamento de Precatórios Judiciais só é aceita acompanhada dos dois documentos abaixo
+                            (art. 29, inciso II, c/c § 6º, da Portaria Conjunta MGI/MF/CGU nº 33/2023).
+                        </p>
+
+                        <div class="br-message info" role="note">
+                            <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                            <div>
+                                <p><strong>Como preparar os arquivos</strong></p>
+                                <ul>
+                                    <li>Formato aceito: <strong>somente PDF (.pdf)</strong>. Fotos (JPG/PNG) e arquivos do Word devem ser convertidos antes — use “Imprimir &gt; Salvar como PDF” ou “Exportar como PDF”.</li>
+                                    <li>Limite por arquivo: <strong>10 MB</strong> e até <strong>20 páginas</strong>.</li>
+                                    <li>O PDF não pode estar protegido por senha e precisa estar legível (para digitalizações, use de 150 a 300 dpi).</li>
+                                    <li>Os anexos <strong>não entram no arquivo das declarações</strong>: eles são gerados em um <strong>terceiro PDF, separado</strong> (“Anexos_Declaração_de_Precatórios_Judiciais”), com página de índice e os subitens <strong>1.1</strong> e <strong>1.2</strong>.</li>
+                                    <li>Cada página do PDF enviado é inserida <strong>como imagem</strong> nesse arquivo de anexos, com o cabeçalho da entidade e a identificação do subitem.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="upload-grid">
+                            <div class="form-group upload-group" data-anexo="remessa">
+                                <span class="upload-title"><span class="subitem">1.1</span>Comprovante de remessa ao Tribunal de Contas <span class="req" aria-hidden="true">*</span></span>
+                                <span class="field-hint">Protocolo, recibo ou e-mail de envio da declaração ao Tribunal de Contas competente (TCE/TCM), com a data visível.</span>
+                                <input type="file" id="anexoRemessa" class="sr-only" accept="application/pdf,.pdf" aria-describedby="erroAnexoRemessa">
+                                <label class="dropzone" for="anexoRemessa">
+                                    <i class="fa-solid fa-file-arrow-up" aria-hidden="true"></i>
+                                    <span><strong>Clique para selecionar</strong> ou arraste o PDF aqui</span>
+                                    <small>Somente .pdf, até 10 MB</small>
+                                </label>
+                                <div class="file-preview" hidden></div>
+                                <span class="error-message" id="erroAnexoRemessa" aria-live="polite"></span>
+                            </div>
+
+                            <div class="form-group upload-group" data-anexo="impossibilidade">
+                                <span class="upload-title"><span class="subitem">1.2</span>Comprovante de impossibilidade de emissão das certidões <span class="req" aria-hidden="true">*</span></span>
+                                <span class="field-hint">Documento que comprove que as certidões do TJ, do TRT e/ou do TRF não puderam ser emitidas (tela de erro, resposta do tribunal, ofício etc.).</span>
+                                <input type="file" id="anexoImpossibilidade" class="sr-only" accept="application/pdf,.pdf" aria-describedby="erroAnexoImpossibilidade">
+                                <label class="dropzone" for="anexoImpossibilidade">
+                                    <i class="fa-solid fa-file-arrow-up" aria-hidden="true"></i>
+                                    <span><strong>Clique para selecionar</strong> ou arraste o PDF aqui</span>
+                                    <small>Somente .pdf, até 10 MB</small>
+                                </label>
+                                <div class="file-preview" hidden></div>
+                                <span class="error-message" id="erroAnexoImpossibilidade" aria-live="polite"></span>
+                            </div>
+                        </div>
+                    </section>
+
                     <div class="button-bar">
                         <button type="button" class="br-button secondary nav-button" data-prev-tab="aba2"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Voltar</button>
                         <button type="submit" class="br-button primary" id="gerarPDFBtn"><i class="fa-solid fa-check" aria-hidden="true"></i> Gerar PDF</button>
@@ -613,6 +713,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <!-- pdf.js: lê o PDF anexado e converte cada página em imagem -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -630,8 +732,17 @@
         const closePopupBtn = document.getElementById('closePopupBtn');
         const overlay = document.getElementById('overlay');
         const loadingMessage = document.getElementById('loadingMessage');
+        const anexosSection = document.getElementById('anexosPrecatoriosSection');
+        const configuracoesGroupEl = document.getElementById('configuracoesGroup');
         const tabs = ['aba1', 'aba2', 'aba3'];
         let nomeEntidadeGlobal = '';
+
+        // pdf.js — worker do mesmo CDN/versão
+        if (window.pdfjsLib) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+
+        const escapeHtml = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
         const applyTheme = (theme) => {
             document.body.dataset.theme = theme;
@@ -640,11 +751,13 @@
 
         themeToggle.addEventListener('click', () => {
             const currentTheme = document.body.dataset.theme === 'light' ? 'dark' : 'light';
-            localStorage.setItem('theme', currentTheme);
+            try { localStorage.setItem('theme', currentTheme); } catch (e) { /* armazenamento indisponível */ }
             applyTheme(currentTheme);
         });
 
-        applyTheme(localStorage.getItem('theme') || 'light');
+        let temaSalvo = null;
+        try { temaSalvo = localStorage.getItem('theme'); } catch (e) { /* armazenamento indisponível */ }
+        applyTheme(temaSalvo || 'light');
 
         const updateStepper = (currentTabIndex) => {
             stepperItems.forEach((item, index) => {
@@ -698,13 +811,12 @@
             let isValid = input.checkValidity() && input.value.trim() !== '';
             if (input.id === 'nomeResponsavel') {
                 const nameValue = input.value.trim();
+                const errorMessage = formGroup.querySelector('.error-message');
                 if (nameValue.split(' ').length < 2) {
                     isValid = false;
-                    const errorMessage = formGroup.querySelector('.error-message');
                     if (errorMessage) errorMessage.textContent = 'Por favor, digite o nome completo (nome e sobrenome).';
-                } else {
-                    const errorMessage = formGroup.querySelector('.error-message');
-                    if (errorMessage) errorMessage.textContent = '';
+                } else if (errorMessage) {
+                    errorMessage.textContent = '';
                 }
             }
             if (!isValid) {
@@ -724,6 +836,17 @@
                 inputs.forEach(input => {
                     if (!validateInput(input)) isTabValid = false;
                 });
+            }
+            if (tabId === 'aba3' && precisaAnexosPrecatorios()) {
+                let primeiroInvalido = null;
+                ANEXOS_PRECATORIOS.forEach(cfg => {
+                    if (!anexosState[cfg.chave]) {
+                        definirErroAnexo(cfg, `Anexe o ${cfg.rotulo.toLowerCase()} em PDF para continuar.`);
+                        isTabValid = false;
+                        if (!primeiroInvalido) primeiroInvalido = grupoAnexo(cfg);
+                    }
+                });
+                if (primeiroInvalido) primeiroInvalido.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
             const nextButton = tab.querySelector('.nav-button[data-next-tab]');
             if (nextButton) nextButton.disabled = !isTabValid;
@@ -817,7 +940,7 @@
             for (const p of PROVEDORES_CNPJ) {
                 try {
                     const resp = await fetch(p.url(cnpj), { signal: AbortSignal.timeout(8000) });
-                    if (resp.status === 404) continue;          // tenta o próximo
+                    if (resp.status === 404) continue;
                     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
                     const dados = p.normalizar(await resp.json());
                     if (dados.razao || dados.municipio) return dados;
@@ -834,35 +957,35 @@
             const errorSpan = formGroup.querySelector('.error-message');
             formGroup.classList.remove('invalid');
 
-    try {
-        const d = await buscarEmProvedores(cnpj);
+            try {
+                const d = await buscarEmProvedores(cnpj);
 
-        if (!d) {
-            nomeEntidadeGlobal = '';
-            camposEndereco.forEach(id => document.getElementById(id).value = '');
-            definirModoManual(true);
-            formGroup.classList.add('invalid');
-            errorSpan.textContent = 'Não foi possível consultar o CNPJ agora. Preencha o endereço manualmente abaixo.';
-            document.getElementById('cep').focus();
-            return;
-        }
+                if (!d) {
+                    nomeEntidadeGlobal = '';
+                    camposEndereco.forEach(id => document.getElementById(id).value = '');
+                    definirModoManual(true);
+                    formGroup.classList.add('invalid');
+                    errorSpan.textContent = 'Não foi possível consultar o CNPJ agora. Preencha o endereço manualmente abaixo.';
+                    document.getElementById('cep').focus();
+                    return;
+                }
 
-        definirModoManual(false);
-        const cepLimpo = String(d.cep || '').replace(/\D/g, '');
-        nomeEntidadeGlobal = d.razao || d.municipio || '';
-        document.getElementById('cep').value = cepLimpo.replace(/(\d{5})(\d{3})/, '$1-$2');
-        document.getElementById('endereco').value = [d.logradouro, d.numero, d.bairro].filter(Boolean).join(', ');
-        document.getElementById('cidadeUF').value = `${d.municipio || ''}/${d.uf || ''}`;
-        document.getElementById('nomeEstadoMunicipio').value = d.razao || d.municipio || '';
-    } finally {
-        toggleLoading(false);
-        validateTab('aba2');
-    }
-};
+                definirModoManual(false);
+                const cepLimpo = String(d.cep || '').replace(/\D/g, '');
+                nomeEntidadeGlobal = d.razao || d.municipio || '';
+                document.getElementById('cep').value = cepLimpo.replace(/(\d{5})(\d{3})/, '$1-$2');
+                document.getElementById('endereco').value = [d.logradouro, d.numero, d.bairro].filter(Boolean).join(', ');
+                document.getElementById('cidadeUF').value = `${d.municipio || ''}/${d.uf || ''}`;
+                document.getElementById('nomeEstadoMunicipio').value = d.razao || d.municipio || '';
+            } finally {
+                toggleLoading(false);
+                validateTab('aba2');
+            }
+        };
 
         const toggleLoading = (show, text = 'Aguarde um momento...') => {
             const p = loadingMessage.querySelector('p');
-            if (p) p.firstChild.textContent = text;
+            if (p) p.firstChild.textContent = text + ' ';
             loadingMessage.classList.toggle('show', show);
         };
 
@@ -879,16 +1002,215 @@
         closePopupBtn.addEventListener('click', closePopup);
         overlay.addEventListener('click', closePopup);
 
+        // =====================================================================
+        // ANEXOS EM PDF — comprovante de remessa e de impossibilidade
+        // Obrigatórios quando "Discricionário e Comissão" estiver marcado e o
+        // município NÃO apresentar as certidões do TJ, TRT e TRF.
+        // =====================================================================
+        const MAX_ANEXO_MB = 10;
+        const MAX_ANEXO_PAGINAS = 20;
+
+        const ANEXOS_PRECATORIOS = [
+            {
+                chave: 'remessa',
+                inputId: 'anexoRemessa',
+                rotulo: 'Comprovante de remessa',
+                titulo: 'COMPROVANTE DE REMESSA DA DECLARAÇÃO AO TRIBUNAL DE CONTAS'
+            },
+            {
+                chave: 'impossibilidade',
+                inputId: 'anexoImpossibilidade',
+                rotulo: 'Comprovante de impossibilidade',
+                titulo: 'COMPROVANTE DE IMPOSSIBILIDADE DE EMISSÃO DAS CERTIDÕES JUDICIAIS (TJ, TRT E TRF)'
+            }
+        ];
+
+        const anexosState = {}; // { remessa: { nomeArquivo, tamanho, paginas: [{dataUrl, width, height}] }, ... }
+
+        const precisaAnexosPrecatorios = () =>
+            !!document.getElementById('comissao')?.checked &&
+            !document.getElementById('apresentaraCertidoes')?.checked;
+
+        const grupoAnexo = (cfg) => document.querySelector(`.upload-group[data-anexo="${cfg.chave}"]`);
+
+        const definirErroAnexo = (cfg, mensagem) => {
+            const grupo = grupoAnexo(cfg);
+            grupo.classList.toggle('invalid', !!mensagem);
+            grupo.querySelector('.error-message').textContent = mensagem || '';
+        };
+
+        const formatarTamanho = (bytes) => bytes < 1024 * 1024
+            ? `${Math.max(1, Math.round(bytes / 1024))} KB`
+            : `${(bytes / 1024 / 1024).toFixed(1).replace('.', ',')} MB`;
+
+        const limparAnexo = (cfg) => {
+            delete anexosState[cfg.chave];
+            const grupo = grupoAnexo(cfg);
+            document.getElementById(cfg.inputId).value = '';
+            const preview = grupo.querySelector('.file-preview');
+            preview.innerHTML = '';
+            preview.hidden = true;
+            grupo.querySelector('.dropzone').hidden = false;
+        };
+
+        const exibirPreviewAnexo = (cfg) => {
+            const a = anexosState[cfg.chave];
+            const grupo = grupoAnexo(cfg);
+            const preview = grupo.querySelector('.file-preview');
+            const n = a.paginas.length;
+            preview.innerHTML = `
+                <img src="${a.paginas[0].dataUrl}" alt="Primeira página de ${escapeHtml(a.nomeArquivo)}">
+                <div class="meta">
+                    <strong>${escapeHtml(a.nomeArquivo)}</strong>
+                    <span>${n} ${n === 1 ? 'página' : 'páginas'}, ${formatarTamanho(a.tamanho)}</span>
+                    <span class="ok"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Será incluído no arquivo de anexos</span>
+                </div>
+                <div class="acoes">
+                    <button type="button" class="br-button secondary small" data-acao="substituir">Substituir</button>
+                    <button type="button" class="br-button secondary small" data-acao="remover">Remover</button>
+                </div>`;
+            preview.hidden = false;
+            grupo.querySelector('.dropzone').hidden = true;
+        };
+
+        // Converte cada página do PDF em imagem JPEG (≈150 dpi)
+        const renderizarPdfEmImagens = async (file) => {
+            const dados = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: dados }).promise;
+            try {
+                if (pdf.numPages < 1) {
+                    const e = new Error('PDF sem páginas'); e.code = 'SEM_PAGINAS'; throw e;
+                }
+                if (pdf.numPages > MAX_ANEXO_PAGINAS) {
+                    const e = new Error('Páginas demais'); e.code = 'EXCESSO_PAGINAS'; e.total = pdf.numPages; throw e;
+                }
+                const paginas = [];
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const base = page.getViewport({ scale: 1 });
+                    const scale = Math.min(2.5, 1600 / Math.max(base.width, base.height)); // ~140 dpi em A4
+                    const viewport = page.getViewport({ scale });
+                    const canvas = document.createElement('canvas');
+                    canvas.width = Math.floor(viewport.width);
+                    canvas.height = Math.floor(viewport.height);
+                    const ctx = canvas.getContext('2d');
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    await page.render({ canvasContext: ctx, viewport }).promise;
+                    paginas.push({ dataUrl: canvas.toDataURL('image/jpeg', 0.85), width: canvas.width, height: canvas.height });
+                    page.cleanup();
+                }
+                return paginas;
+            } finally {
+                pdf.destroy();
+            }
+        };
+
+        const mensagemErroPdf = (err) => {
+            if (err?.name === 'PasswordException') return 'Este PDF está protegido por senha. Remova a proteção e envie novamente.';
+            if (err?.code === 'EXCESSO_PAGINAS') return `O PDF tem ${err.total} páginas. O limite é ${MAX_ANEXO_PAGINAS} páginas por arquivo.`;
+            if (err?.code === 'SEM_PAGINAS') return 'O PDF está vazio. Envie um arquivo com ao menos uma página.';
+            if (err?.name === 'InvalidPDFException') return 'O arquivo não é um PDF válido ou está corrompido. Gere o PDF novamente e envie outra vez.';
+            return 'Não foi possível ler este PDF. Gere o arquivo novamente (“Salvar como PDF”) e envie outra vez.';
+        };
+
+        const processarArquivoAnexo = async (cfg, file) => {
+            definirErroAnexo(cfg, '');
+            if (!file) return;
+
+            const ehPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
+            if (!ehPdf) {
+                limparAnexo(cfg);
+                definirErroAnexo(cfg, `Formato não aceito (“${file.name}”). Envie somente arquivo PDF (.pdf).`);
+                return;
+            }
+            if (file.size > MAX_ANEXO_MB * 1024 * 1024) {
+                limparAnexo(cfg);
+                definirErroAnexo(cfg, `O arquivo tem ${formatarTamanho(file.size)}. O limite é ${MAX_ANEXO_MB} MB; reduza ou comprima o PDF.`);
+                return;
+            }
+            if (typeof pdfjsLib === 'undefined') {
+                limparAnexo(cfg);
+                definirErroAnexo(cfg, 'O leitor de PDF não carregou. Verifique a conexão e recarregue a página.');
+                return;
+            }
+
+            toggleLoading(true, 'Lendo o PDF anexado...');
+            try {
+                const paginas = await renderizarPdfEmImagens(file);
+                anexosState[cfg.chave] = { nomeArquivo: file.name, tamanho: file.size, paginas };
+                exibirPreviewAnexo(cfg);
+            } catch (err) {
+                console.error('Erro ao ler PDF anexado:', err);
+                limparAnexo(cfg);
+                definirErroAnexo(cfg, mensagemErroPdf(err));
+            } finally {
+                toggleLoading(false);
+            }
+        };
+
+        ANEXOS_PRECATORIOS.forEach(cfg => {
+            const input = document.getElementById(cfg.inputId);
+            const grupo = grupoAnexo(cfg);
+            const dropzone = grupo.querySelector('.dropzone');
+
+            input.addEventListener('change', () => processarArquivoAnexo(cfg, input.files?.[0]));
+
+            ['dragenter', 'dragover'].forEach(ev => dropzone.addEventListener(ev, (e) => {
+                e.preventDefault();
+                dropzone.classList.add('dragover');
+            }));
+            ['dragleave', 'drop'].forEach(ev => dropzone.addEventListener(ev, (e) => {
+                e.preventDefault();
+                dropzone.classList.remove('dragover');
+            }));
+            dropzone.addEventListener('drop', (e) => {
+                const file = e.dataTransfer?.files?.[0];
+                if (file) processarArquivoAnexo(cfg, file);
+            });
+
+            grupo.addEventListener('click', (e) => {
+                const botao = e.target.closest('[data-acao]');
+                if (!botao) return;
+                if (botao.dataset.acao === 'remover') {
+                    limparAnexo(cfg);
+                    input.focus();
+                } else if (botao.dataset.acao === 'substituir') {
+                    input.click();
+                }
+            });
+        });
+
+        const atualizarSecaoAnexos = () => {
+            const precisa = precisaAnexosPrecatorios();
+            anexosSection.hidden = !precisa;
+            if (!precisa) ANEXOS_PRECATORIOS.forEach(cfg => definirErroAnexo(cfg, ''));
+        };
+
+        configuracoesGroupEl.addEventListener('change', (e) => {
+            if (e.target.id === 'apresentaraCertidoes') atualizarSecaoAnexos();
+        });
+
+        // --- Checkboxes da etapa 3 (preserva o que já estava marcado) ---
         const updateConfiguracoesCheckboxes = () => {
-            const configuracoesGroup = document.getElementById('configuracoesGroup');
+            const configuracoesGroup = configuracoesGroupEl;
             if (!configuracoesGroup) return;
+
+            const estadoAnterior = {};
+            configuracoesGroup.querySelectorAll('input[type="checkbox"]').forEach(cb => { estadoAnterior[cb.id] = cb.checked; });
             configuracoesGroup.innerHTML = '';
+
             const emendaChecked = document.getElementById('emenda')?.checked || false;
             const comissaoChecked = document.getElementById('comissao')?.checked || false;
 
             const checkboxes = [
                 { id: 'possuiAreaGestora', label: 'O município possui área gestora dos recursos recebidos por transferência voluntária da União?', show: emendaChecked || comissaoChecked },
-                { id: 'apresentaraCertidoes', label: 'O Município apresentará as Certidões emitidas pelo Tribunal de Justiça (TJ), Tribunal Regional do Trabalho (TRT) e Tribunal Regional Federal (TRF)?', show: comissaoChecked },
+                {
+                    id: 'apresentaraCertidoes',
+                    label: 'O Município apresentará as Certidões emitidas pelo Tribunal de Justiça (TJ), Tribunal Regional do Trabalho (TRT) e Tribunal Regional Federal (TRF)?',
+                    hint: 'Se não marcar, será gerada a Declaração de Regularidade no Pagamento de Precatórios Judiciais e você precisará anexar, em PDF, o comprovante de remessa ao Tribunal de Contas e o comprovante de impossibilidade de emissão das certidões. Esses anexos serão gerados em um arquivo PDF separado.',
+                    show: comissaoChecked
+                },
                 { id: 'ate65milHabitantes', label: 'O município possui até 65 mil habitantes?', show: comissaoChecked },
                 { id: 'regularPrecatorios', label: 'O município está regular quanto à destinação dos precatórios correspondentes ao rateio dos percentuais destinados aos profissionais do magistério e aos demais profissionais da educação básica?', show: comissaoChecked }
             ];
@@ -898,12 +1220,14 @@
                     const div = document.createElement('div');
                     div.className = 'checkbox-item';
                     div.innerHTML = `
-                        <input type="checkbox" id="${cb.id}" name="configuracoes">
-                        <label for="${cb.id}">${cb.label}</label>
+                        <input type="checkbox" id="${cb.id}" name="configuracoes" ${estadoAnterior[cb.id] ? 'checked' : ''}>
+                        <label for="${cb.id}">${cb.label}${cb.hint ? `<span class="field-hint">${cb.hint}</span>` : ''}</label>
                     `;
                     configuracoesGroup.appendChild(div);
                 }
             });
+
+            atualizarSecaoAnexos();
         };
 
         document.querySelectorAll('input[name="declaracaoTipo"]').forEach(checkbox => {
@@ -932,13 +1256,16 @@
             img.src = url;
         });
 
-        function numToWords(num) {
-            const units = ['', 'uma', 'duas', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove', 'dez', 'onze', 'doze'];
+        // genero: 'f' (declarações) ou 'm' (anexos)
+        function numToWords(num, genero = 'f') {
+            const fem  = ['', 'uma', 'duas', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove', 'dez', 'onze', 'doze'];
+            const masc = ['', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove', 'dez', 'onze', 'doze'];
+            const units = genero === 'm' ? masc : fem;
             if (num >= 0 && num < units.length) return units[num];
             return String(num);
         }
 
-const getDeclaracoes = (opcao, dados, configuracoes) => {
+        const getDeclaracoes = (opcao, dados, configuracoes) => {
             const { nome, cargo, nomeEstadoMunicipio, cnpj, endereco, complemento, cep, cidadeUF } = dados;
             const fullAddress = `${endereco}${complemento ? `, ${complemento}` : ''}`;
             const uf = cidadeUF.split('/')[1] || 'UF';
@@ -946,6 +1273,7 @@ const getDeclaracoes = (opcao, dados, configuracoes) => {
             const representanteText = cargo === 'Comandante-Geral' ? 'Representante' : `Representante do ${nomeEstadoMunicipio}`;
             const entityText = cargo === 'Comandante-Geral' ? '' : `${nomeEstadoMunicipio}/${uf}`;
             const addressText = cargo === 'Comandante-Geral' ? '' : `, endereço ${fullAddress}, CEP ${cep}, ${cidadeUF}`;
+            const enteProponente = nomeEstadoMunicipio || 'ente proponente';
 
             const declaracoesBase = {
                 area_gestora_existe_taxa: {
@@ -960,12 +1288,24 @@ const getDeclaracoes = (opcao, dados, configuracoes) => {
                     content: `Eu, ${nome}, na condição de ${representanteText}, CNPJ nº ${cnpj}, declaro para os devidos fins de celebração de Convênio no âmbito do Ministério do Esporte - MESP, em cumprimento ao § 17 e inciso XXXIV do art. 29 da Portaria Conjunta MGI/MF/CGU Nº 33, de 30 de agosto de 2023, sob as penas da lei, que${entityText ? ` o Município de ${entityText}${addressText}` : ''}:\na) não possui área gestora dos recursos recebidos por transferência voluntária da União, com atribuições definidas para gestão, celebração, execução e prestação de contas, assim, atribuirá a competência pela gestão dos recursos recebidos por transferência voluntária da União a outro setor que possua, no mínimo, um servidor ou empregado público efetivo; e\nb) inexiste legislação do proponente, na localidade de execução do objeto, que estabeleça a cobrança de taxa de administração de contrato, em consonância com a vedação do art. 21, parágrafo único, inciso I, da Portaria Conjunta nº 33/2023.`,
                     footer: 'Declaração válida somente no mês da assinatura'
                 },
+
+                // ===== DECLARAÇÃO ATUALIZADA (modelo novo, EC nº 136/2025) =====
                 precatorios_judiciais: {
                     id: 'precatorios_judiciais',
-                    title: 'DECLARAÇÃO DE REGULARIDADE NO PAGAMENTO DE PRECATÓRIOS JUDICIAIS\nINCISO II c/c § 6º DO ART. 29 DA PC 33, DE 2023',
-                    content: `Eu, ${nome}, na condição de ${representanteText}, CNPJ nº ${cnpj}, declaro para os devidos fins de celebração de Convênio no âmbito do Ministério do Esporte - MESP, em cumprimento ao disposto no inciso II c/c §6º do art. 29 da Portaria Conjunta MGI/MF/CGU Nº 33, de 30 de agosto de 2023, sob as penas da lei, que${entityText ? ` o Município de ${entityText}${addressText}` : ''} está regular quanto ao pagamento de precatórios judiciais, nos termos do art. 104, do Ato das Disposições Constitucionais Transitórias.`,
+                    title: 'DECLARAÇÃO DE REGULARIDADE NO PAGAMENTO DE PRECATÓRIOS JUDICIAIS\nART. 29, INCISO II, C/C § 6º DA PORTARIA CONJUNTA MGI/MF/CGU Nº 33, DE 30 DE AGOSTO DE 2023',
+                    content: [
+                        'Eu, ', { text: nome, bold: true },
+                        ', na condição de ', { text: cargo, bold: true },
+                        ', em relação ao ', { text: enteProponente, bold: true },
+                        ', inscrito no CNPJ sob o nº ', { text: cnpj, bold: true },
+                        ', declaro, sob as penas da lei, para fins de celebração de instrumento no âmbito do Ministério do Esporte, em atendimento ao disposto no art. 29, inciso II, combinado com o § 6º, da Portaria Conjunta MGI/MF/CGU nº 33, de 30 de agosto de 2023, que o referido ente ou proponente está regular quanto ao cumprimento das obrigações relativas ao pagamento de precatórios judiciais, nos termos do art. 100 da Constituição Federal, especialmente dos §§ 23 e 27, e, quando aplicável, dos arts. 101 e 104 do Ato das Disposições Constitucionais Transitórias, observadas as alterações promovidas pela Emenda Constitucional nº 136, de 9 de setembro de 2025.\n\n',
+                        'Declaro, ainda, que a presente manifestação é apresentada em razão da impossibilidade de emissão das certidões judiciais previstas no art. 29, inciso II, da referida Portaria Conjunta, conforme ',
+                        { text: 'documentação comprobatória apresentada, acompanhada do comprovante de remessa desta declaração ao respectivo Tribunal de Contas', bold: true },
+                        ', em atendimento ao disposto no § 6º do mesmo artigo.'
+                    ],
                     footer: 'Declaração válida somente no mês da assinatura, juntamente com o comprovante de remessa da Declaração ao Tribunal de Contas'
                 },
+
                 empresas_publicas: {
                     id: 'empresas_publicas',
                     title: 'DECLARAÇÃO DE REGULARIDADE NO FORNECIMENTO DA RELAÇÃO DAS EMPRESAS PÚBLICAS E DAS SOCIEDADES DE ECONOMIA MISTA AO REGISTRO PÚBLICO DE EMPRESAS MERCANTIS E ATIVIDADES AFINS E REGULARIDADE NA CONTRATAÇÃO DE OPERAÇÃO DE CRÉDITO COM INSTITUIÇÃO FINANCEIRA\nINCISOS XX E XXXII DO ART. 29 DA PC 33, DE 2023',
@@ -996,357 +1336,500 @@ const getDeclaracoes = (opcao, dados, configuracoes) => {
                 }
             };
 
-        let declaracoesSelecionadas = [];
+            const declaracoesSelecionadas = [];
 
             if (opcao === '20JP_00SL_emenda') {
-                if (configuracoes.possuiAreaGestora) {
-                    declaracoesSelecionadas.push(declaracoesBase.area_gestora_existe_taxa);
-                } else {
-                    declaracoesSelecionadas.push(declaracoesBase.area_gestora_inexiste_taxa);
-                }
+                declaracoesSelecionadas.push(configuracoes.possuiAreaGestora
+                    ? declaracoesBase.area_gestora_existe_taxa
+                    : declaracoesBase.area_gestora_inexiste_taxa);
             } else if (opcao === '20JP_00SL_comissao') {
                 if (!configuracoes.apresentaraCertidoes) {
                     declaracoesSelecionadas.push(declaracoesBase.precatorios_judiciais);
                 }
                 declaracoesSelecionadas.push(declaracoesBase.empresas_publicas);
                 declaracoesSelecionadas.push(declaracoesBase.limites_cumprimento);
-                if (configuracoes.regularPrecatorios) {
-                    declaracoesSelecionadas.push(declaracoesBase.precatorios_educacao_regular);
-                } else {
-                    declaracoesSelecionadas.push(declaracoesBase.precatorios_educacao_ausencia);
-                }
-                if (configuracoes.possuiAreaGestora) {
-                    declaracoesSelecionadas.push(declaracoesBase.area_gestora_existe_taxa);
-                } else {
-                    declaracoesSelecionadas.push(declaracoesBase.area_gestora_inexiste_taxa);
-                }
+                declaracoesSelecionadas.push(configuracoes.regularPrecatorios
+                    ? declaracoesBase.precatorios_educacao_regular
+                    : declaracoesBase.precatorios_educacao_ausencia);
+                declaracoesSelecionadas.push(configuracoes.possuiAreaGestora
+                    ? declaracoesBase.area_gestora_existe_taxa
+                    : declaracoesBase.area_gestora_inexiste_taxa);
             }
             return declaracoesSelecionadas.filter(d => d);
         };
 
-const createDeclarationContent = (declaracao, dados, { withSignature = false } = {}) => {
-    const contentStack = [
-        { text: dados.nomeEntidade || 'Entidade não informada', style: 'entityName' },
-        { text: `${dados.endereco || 'Endereço não informado'} - ${dados.cidadeUF || 'Município/UF não informado'} - CEP: ${dados.cep || 'CEP não informado'}`, style: 'entityAddress' },
-        { canvas: [{ type: 'line', x1: 0, y1: 5, x2: 515, y2: 5, lineWidth: 0.5, lineColor: '#cccccc' }], margin: [0, 0, 0, 10] },
-        { text: declaracao.title, style: 'header', alignment: 'center', margin: [0, 15, 0, 20] },
-        { text: declaracao.content, alignment: 'justify', fontSize: 12, lineHeight: 1.15, margin: [0, 0, 0, 30] }
-    ];
+        // Cabeçalho com nome e endereço da entidade (repetido em todas as páginas)
+        const cabecalhoEntidade = (dados) => ([
+            { text: dados.nomeEntidade || 'Entidade não informada', style: 'entityName' },
+            { text: `${dados.endereco || 'Endereço não informado'} - ${dados.cidadeUF || 'Município/UF não informado'} - CEP: ${dados.cep || 'CEP não informado'}`, style: 'entityAddress' },
+            { canvas: [{ type: 'line', x1: 0, y1: 5, x2: 515, y2: 5, lineWidth: 0.5, lineColor: '#cccccc' }], margin: [0, 0, 0, 10] }
+        ]);
 
-if (withSignature) {
-    const meses = [
-        'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
-        'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'
-    ];
-
-    const hoje = new Date();
-    const dia = String(hoje.getDate()).padStart(2, '0');
-    const mes = meses[hoje.getMonth()];
-    const ano = hoje.getFullYear();
-
-    contentStack.push({
-        stack: [
-            {
-                text: `${dados.cidadeUF.split('/')[0].toUpperCase()}, na data da assinatura eletrônica.`,
-                alignment: 'center',
-                fontSize: 11,
-                margin: [0, 20, 0, 10]
-            },
-            { text: '__________________________________________', alignment: 'center', fontSize: 11, margin: [0, 10, 0, 5] },
-            { text: dados.nome, alignment: 'center', bold: true, fontSize: 11 },
-            { text: dados.cargo, alignment: 'center', italic: true, fontSize: 11 }
-        ],
-        unbreakable: true
-    });
-}
-    return { stack: contentStack };
-};
-
-const createLastPageContent = (declaracoes, dados) => {
-    function formatarDataAtual() {
-    const meses = [
-        'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
-        'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'
-    ];
-    const hoje = new Date();
-    const dia = String(hoje.getDate()).padStart(2, '0');
-    const mes = meses[hoje.getMonth()];
-    const ano = hoje.getFullYear();
-    return `${dia} de ${mes} de ${ano}`;
-}
-return {
-    pageBreak: 'before',
-    stack: [
-        { text: dados.nomeEntidade || 'Entidade não informada', style: 'entityName' },
-        { text: `${dados.endereco || 'Endereço não informado'} - ${dados.cidadeUF || 'Município/UF não informado'} - CEP: ${dados.cep || 'CEP não informado'}`, style: 'entityAddress' },
-        { canvas: [{ type: 'line', x1: 0, y1: 5, x2: 515, y2: 5, lineWidth: 0.5, lineColor: '#cccccc' }], margin: [0, 0, 0, 10] },
-        { text: 'DECLARAÇÕES REFERENCIAIS', style: 'header', alignment: 'center', margin: [0, 15, 0, 15] },
-        { text: 'Relação das declarações contidas neste documento, assinadas eletronicamente na presente página.', style: 'subheader', margin: [0, 5, 0, 10] },
-        {
-            table: {
-                headerRows: 1,
-                widths: [40, '*'],
-                body: [
-                    [{ text: 'Página', style: 'tableHeader' }, { text: 'Descrição', style: 'tableHeader' }],
-                    ...declaracoes.map((decl, idx) => [
-                        { text: `${idx + 1}`, alignment: 'center', fontSize: 9 },
-                        { text: decl.title, linkToPage: idx + 1, decoration: 'underline', color: '#1351b4', fontSize: 9 }
-                    ])
-                ]
-            },
-            layout: {
-                hLineWidth: (i, node) => (i === 0 || i === node.table.body.length) ? 1.5 : 0.5,
-                vLineWidth: () => 1,
-                hLineColor: () => '#1351b4',
-                vLineColor: () => '#1351b4',
-                paddingLeft: () => 5,
-                paddingRight: () => 5,
-                paddingTop: () => 2,
-                paddingBottom: () => 2
-            },
-            margin: [0, 10, 0, 20]
-        },
-        { text: `Por ser verdade, firmo o teor das ${numToWords(declaracoes.length)} (${declaracoes.length}) declarações que compõem este arquivo:`, alignment: 'justify', fontSize: 11, margin: [0, 20, 0, 10] },
-        {
+        const blocoAssinatura = (dados) => ({
             stack: [
                 { text: `${dados.cidadeUF.split('/')[0].toUpperCase()}, na data da assinatura eletrônica.`, alignment: 'center', fontSize: 11, margin: [0, 20, 0, 10] },
                 { text: '__________________________________________', alignment: 'center', fontSize: 11, margin: [0, 10, 0, 5] },
                 { text: dados.nome, alignment: 'center', bold: true, fontSize: 11 },
-                { text: dados.cargo, alignment: 'center', italic: true, fontSize: 11 }
+                { text: dados.cargo, alignment: 'center', italics: true, fontSize: 11 }
             ],
             unbreakable: true
-        }
-    ]
-};
-};
+        });
 
-const gerarPDFPrincipal = (declaracoes, dados, watermarkImage) => {
-    return new Promise((resolve, reject) => {
-        try {
-            const allPagesContent = [];
-            const isMultiPage = declaracoes.length > 1;
+        const createDeclarationContent = (declaracao, dados, { withSignature = false } = {}) => {
+            const contentStack = [
+                ...cabecalhoEntidade(dados),
+                { text: declaracao.title, style: 'header', alignment: 'center', margin: [0, 15, 0, 20] },
+                { text: declaracao.content, alignment: 'justify', fontSize: 12, lineHeight: 1.15, margin: [0, 0, 0, 30] }
+            ];
+            if (withSignature) contentStack.push(blocoAssinatura(dados));
+            return { stack: contentStack };
+        };
 
-            if (isMultiPage) {
-                declaracoes.forEach((decl, index) => {
-                    const pageContent = createDeclarationContent(decl, dados, { withSignature: false });
-                    if (index > 0) pageContent.pageBreak = 'before';
-                    allPagesContent.push(pageContent);
-                });
-                allPagesContent.push(createLastPageContent(declaracoes, dados));
-            } else {
-                allPagesContent.push(createDeclarationContent(declaracoes[0], dados, { withSignature: true }));
-            }
-
-            const docDefinition = {
-                pageSize: 'A4',
-                pageMargins: [40, 80, 40, 80],
-                background: () => watermarkImage ? { image: watermarkImage, width: 595.28, height: 841.89, absolutePosition: { x: 0, y: 0 } } : null,
-                footer: (currentPage, pageCount) => {
-                    let footerText = '';
-                    if (pageCount > 1) {
-                        footerText = (currentPage < pageCount)
-                            ? declaracoes[currentPage - 1]?.footer
-                            : `Documento composto por ${pageCount - 1} (${numToWords(pageCount - 1)}) declarações, assinado eletronicamente nesta página`;
-                    } else {
-                        footerText = declaracoes[0]?.footer;
+        // Página de anexo: cada página do PDF enviado vira uma imagem
+        const createAnexoPageContent = ({ anexo, subnumero, img, indicePagina, declaracao, dados }) => ({
+            pageBreak: 'before',
+            stack: [
+                ...cabecalhoEntidade(dados),
+                { text: `ANEXO ${subnumero} – ${anexo.titulo}`, style: 'header', alignment: 'center', margin: [0, 8, 0, 4] },
+                { text: `Vinculado à ${declaracao.title.split('\n')[0]}`, style: 'anexoInfo' },
+                { text: `Arquivo: ${anexo.nomeArquivo} – página ${indicePagina + 1} de ${anexo.paginas.length}`, style: 'anexoInfo', margin: [0, 0, 0, 8] },
+                {
+                    table: { widths: ['*'], body: [[{ image: img.dataUrl, fit: [499, 490], alignment: 'center' }]] },
+                    layout: {
+                        hLineWidth: () => 0.5, vLineWidth: () => 0.5,
+                        hLineColor: () => '#bbbbbb', vLineColor: () => '#bbbbbb',
+                        paddingLeft: () => 4, paddingRight: () => 4, paddingTop: () => 4, paddingBottom: () => 4
                     }
-                    if (!footerText) return null;
-                    const isLongText = footerText.includes('RGF');
-                    const mainTextAlign = isLongText ? 'justify' : 'left';
-                    return {
-                        margin: [40, 10, 40, 0],
-                        stack: [
-                            { canvas: [{ type: 'line', x1: 0, y1: 5, x2: 515, y2: 5, lineWidth: 0.5, lineColor: '#AAAAAA' }], margin: [0, 0, 0, 5] },
-                            {
-                                columns: [
-                                    { text: footerText, alignment: mainTextAlign, fontSize: 8, color: '#555' },
-                                    { text: `Página ${currentPage} de ${pageCount}`, alignment: 'right', fontSize: 8, color: '#555', width: 'auto' }
+                }
+            ]
+        });
+
+        const createLastPageContent = (indice, qtdDeclaracoes, qtdAnexos, dados) => {
+            const corpoTabela = [
+                [
+                    { text: 'Item', style: 'tableHeader' },
+                    { text: 'Descrição', style: 'tableHeader' },
+                    { text: 'Página', style: 'tableHeader' }
+                ],
+                ...indice.map(linha => {
+                    const paginas = linha.paginaInicial === linha.paginaFinal
+                        ? `${linha.paginaInicial}`
+                        : `${linha.paginaInicial} a ${linha.paginaFinal}`;
+                    return [
+                        { text: linha.numero, alignment: 'center', fontSize: 9, bold: !linha.anexo },
+                        {
+                            text: linha.titulo, linkToPage: linha.paginaInicial, decoration: 'underline',
+                            color: '#1351b4', fontSize: linha.anexo ? 8.5 : 9,
+                            margin: linha.anexo ? [14, 0, 0, 0] : [0, 0, 0, 0]
+                        },
+                        { text: paginas, alignment: 'center', fontSize: 9 }
+                    ];
+                })
+            ];
+
+            const textoDecl = qtdDeclaracoes === 1
+                ? 'Por ser verdade, firmo o teor da declaração que compõe este arquivo'
+                : `Por ser verdade, firmo o teor das ${numToWords(qtdDeclaracoes)} (${qtdDeclaracoes}) declarações que compõem este arquivo`;
+            const textoAnexos = qtdAnexos === 0 ? ''
+                : qtdAnexos === 1
+                    ? ', acompanhada(s) de um (1) anexo nele incorporado'
+                    : `, acompanhada(s) de ${numToWords(qtdAnexos, 'm')} (${qtdAnexos}) anexos nele incorporados`;
+
+            return {
+                pageBreak: 'before',
+                stack: [
+                    ...cabecalhoEntidade(dados),
+                    { text: 'DECLARAÇÕES REFERENCIAIS', style: 'header', alignment: 'center', margin: [0, 15, 0, 15] },
+                    {
+                        text: qtdAnexos
+                            ? 'Relação das declarações e dos anexos contidos neste documento, assinados eletronicamente na presente página.'
+                            : 'Relação das declarações contidas neste documento, assinadas eletronicamente na presente página.',
+                        style: 'subheader', margin: [0, 5, 0, 10]
+                    },
+                    {
+                        table: { headerRows: 1, widths: [34, '*', 44], body: corpoTabela },
+                        layout: {
+                            hLineWidth: (i, node) => (i === 0 || i === node.table.body.length) ? 1.5 : 0.5,
+                            vLineWidth: () => 1,
+                            hLineColor: () => '#1351b4',
+                            vLineColor: () => '#1351b4',
+                            paddingLeft: () => 5,
+                            paddingRight: () => 5,
+                            paddingTop: () => 2,
+                            paddingBottom: () => 2
+                        },
+                        margin: [0, 10, 0, 20]
+                    },
+                    { text: `${textoDecl}${textoAnexos}:`, alignment: 'justify', fontSize: 11, margin: [0, 20, 0, 10] },
+                    blocoAssinatura(dados)
+                ]
+            };
+        };
+
+        const gerarPDFPrincipal = (declaracoes, dados, watermarkImage) => {
+            return new Promise((resolve, reject) => {
+                try {
+                    const qtdAnexos = declaracoes.reduce((total, d) => total + (d.anexos?.length || 0), 0);
+                    const usarFolhaReferencial = declaracoes.length > 1 || qtdAnexos > 0;
+
+                    const conteudo = [];
+                    const rodapes = [];   // rodapé de cada página física (exceto a folha de assinatura)
+                    const indice = [];    // linhas da tabela de referência
+
+                    declaracoes.forEach((decl, i) => {
+                        const numero = String(i + 1);
+                        const bloco = createDeclarationContent(decl, dados, { withSignature: !usarFolhaReferencial });
+                        if (conteudo.length) bloco.pageBreak = 'before';
+                        conteudo.push(bloco);
+                        rodapes.push(decl.footer);
+                        indice.push({ numero, titulo: decl.title, paginaInicial: rodapes.length, paginaFinal: rodapes.length, anexo: false });
+
+                        (decl.anexos || []).forEach((anexo, j) => {
+                            const subnumero = `${numero}.${j + 1}`;
+                            const paginaInicial = rodapes.length + 1;
+                            anexo.paginas.forEach((img, k) => {
+                                conteudo.push(createAnexoPageContent({ anexo, subnumero, img, indicePagina: k, declaracao: decl, dados }));
+                                rodapes.push(`Anexo ${subnumero} da declaração do item ${numero} – página ${k + 1} de ${anexo.paginas.length} do arquivo enviado`);
+                            });
+                            indice.push({ numero: subnumero, titulo: `ANEXO ${subnumero} – ${anexo.titulo}`, paginaInicial, paginaFinal: rodapes.length, anexo: true });
+                        });
+                    });
+
+                    if (usarFolhaReferencial) {
+                        conteudo.push(createLastPageContent(indice, declaracoes.length, qtdAnexos, dados));
+                    }
+
+                    const qtdDecl = declaracoes.length;
+                    const textoRodapeFinal =
+                        `Documento composto por ${qtdDecl} (${numToWords(qtdDecl)}) ${qtdDecl === 1 ? 'declaração' : 'declarações'}` +
+                        (qtdAnexos ? ` e ${qtdAnexos} (${numToWords(qtdAnexos, 'm')}) ${qtdAnexos === 1 ? 'anexo' : 'anexos'}` : '') +
+                        ', assinado eletronicamente nesta página';
+
+                    const docDefinition = {
+                        pageSize: 'A4',
+                        pageMargins: [40, 80, 40, 80],
+                        background: () => watermarkImage ? { image: watermarkImage, width: 595.28, height: 841.89, absolutePosition: { x: 0, y: 0 } } : null,
+                        footer: (currentPage, pageCount) => {
+                            const footerText = (usarFolhaReferencial && currentPage === pageCount)
+                                ? textoRodapeFinal
+                                : rodapes[currentPage - 1];
+                            if (!footerText) return null;
+                            const isLongText = footerText.includes('RGF');
+                            return {
+                                margin: [40, 10, 40, 0],
+                                stack: [
+                                    { canvas: [{ type: 'line', x1: 0, y1: 5, x2: 515, y2: 5, lineWidth: 0.5, lineColor: '#AAAAAA' }], margin: [0, 0, 0, 5] },
+                                    {
+                                        columns: [
+                                            { text: footerText, alignment: isLongText ? 'justify' : 'left', fontSize: 8, color: '#555' },
+                                            { text: `Página ${currentPage} de ${pageCount}`, alignment: 'right', fontSize: 8, color: '#555', width: 'auto' }
+                                        ]
+                                    }
                                 ]
+                            };
+                        },
+                        content: conteudo,
+                        styles: {
+                            header: { fontSize: 12, bold: true, color: '#0c326f' },
+                            subheader: { fontSize: 10, italics: true, color: '#333333' },
+                            entityName: { bold: true, alignment: 'center', fontSize: 14, margin: [0, 0, 0, 2] },
+                            entityAddress: { fontSize: 9, alignment: 'center', margin: [0, 0, 0, 5] },
+                            anexoInfo: { fontSize: 9, alignment: 'center', italics: true, color: '#555555' },
+                            tableHeader: { fontSize: 10, bold: true, color: '#FFFFFF', fillColor: '#1351b4', alignment: 'center' }
+                        },
+                        defaultStyle: { font: 'Roboto', alignment: 'justify' }
+                    };
+
+                    let fileName = '';
+                    if (usarFolhaReferencial) {
+                        fileName = `Declarações_COM_Envio_ao_TCE_${dados.nome.replace(/\s+/g, '_')}.pdf`;
+                    } else {
+                        const singleDeclId = declaracoes[0].id;
+                        if (singleDeclId === 'area_gestora_existe_taxa' || singleDeclId === 'area_gestora_inexiste_taxa') {
+                            fileName = `Declaração_de_Área_Gestora_e_Inexistência_de_Legislação_${dados.nome.replace(/\s+/g, '_')}.pdf`;
+                        } else {
+                            fileName = `Declaração_${dados.nome.replace(/\s+/g, '_')}.pdf`;
+                        }
+                    }
+
+                    pdfMake.createPdf(docDefinition).download(fileName, () => resolve());
+                } catch (error) {
+                    reject(error);
+                }
+            });
+        };
+
+        // ===== 3º DOCUMENTO: ANEXOS DA DECLARAÇÃO DE PRECATÓRIOS (arquivo separado) =====
+        const nomeArquivoAnexos = (dados) => `Anexos_Declaração_de_Precatórios_Judiciais_${dados.nome.replace(/\s+/g, '_')}.pdf`;
+
+        const gerarPDFAnexos = ({ anexos, numeroItem, declaracao }, dados, watermarkImage) => {
+            return new Promise((resolve, reject) => {
+                try {
+                    const tituloDeclaracao = declaracao.title.split('\n')[0];
+                    const conteudo = [];
+                    const rodapes = ['Índice dos anexos da Declaração de Regularidade no Pagamento de Precatórios Judiciais'];
+                    const indice = [];
+
+                    anexos.forEach((anexo, j) => {
+                        const subnumero = `${numeroItem}.${j + 1}`;
+                        const paginaInicial = rodapes.length + 1;
+                        anexo.paginas.forEach((img, k) => {
+                            conteudo.push(createAnexoPageContent({ anexo, subnumero, img, indicePagina: k, declaracao, dados }));
+                            rodapes.push(`Anexo ${subnumero} – página ${k + 1} de ${anexo.paginas.length} do arquivo enviado`);
+                        });
+                        indice.push({ subnumero, titulo: anexo.titulo, nomeArquivo: anexo.nomeArquivo, paginaInicial, paginaFinal: rodapes.length });
+                    });
+
+                    // Página 1: capa com índice dos anexos
+                    const capa = {
+                        stack: [
+                            ...cabecalhoEntidade(dados),
+                            { text: 'ANEXOS DA DECLARAÇÃO DE REGULARIDADE NO PAGAMENTO DE PRECATÓRIOS JUDICIAIS', style: 'header', alignment: 'center', margin: [0, 15, 0, 6] },
+                            { text: 'ART. 29, INCISO II, C/C § 6º DA PORTARIA CONJUNTA MGI/MF/CGU Nº 33, DE 30 DE AGOSTO DE 2023', style: 'header', fontSize: 10, alignment: 'center', margin: [0, 0, 0, 18] },
+                            {
+                                text: `Documentos que acompanham a ${tituloDeclaracao} (item ${numeroItem} do arquivo de declarações), apresentados em razão da impossibilidade de emissão das certidões do TJ, do TRT e do TRF, conforme o § 6º do art. 29 da referida Portaria Conjunta.`,
+                                fontSize: 11, alignment: 'justify', lineHeight: 1.15, margin: [0, 0, 0, 14]
+                            },
+                            {
+                                table: {
+                                    headerRows: 1,
+                                    widths: [34, '*', 50],
+                                    body: [
+                                        [
+                                            { text: 'Item', style: 'tableHeader' },
+                                            { text: 'Documento', style: 'tableHeader' },
+                                            { text: 'Página', style: 'tableHeader' }
+                                        ],
+                                        ...indice.map(l => [
+                                            { text: l.subnumero, alignment: 'center', fontSize: 9, bold: true },
+                                            {
+                                                stack: [
+                                                    { text: l.titulo, linkToPage: l.paginaInicial, decoration: 'underline', color: '#1351b4', fontSize: 9 },
+                                                    { text: `Arquivo enviado: ${l.nomeArquivo}`, fontSize: 8, italics: true, color: '#555555', margin: [0, 2, 0, 0] }
+                                                ]
+                                            },
+                                            { text: l.paginaInicial === l.paginaFinal ? `${l.paginaInicial}` : `${l.paginaInicial} a ${l.paginaFinal}`, alignment: 'center', fontSize: 9 }
+                                        ])
+                                    ]
+                                },
+                                layout: {
+                                    hLineWidth: (i, node) => (i === 0 || i === node.table.body.length) ? 1.5 : 0.5,
+                                    vLineWidth: () => 1,
+                                    hLineColor: () => '#1351b4',
+                                    vLineColor: () => '#1351b4',
+                                    paddingLeft: () => 5, paddingRight: () => 5, paddingTop: () => 3, paddingBottom: () => 3
+                                }
                             }
                         ]
                     };
-                },
-                content: allPagesContent,
-                styles: {
-                    header: { fontSize: 12, bold: true, color: '#0c326f' },
-                    subheader: { fontSize: 10, italic: true, color: '#333333' },
-                    entityName: { bold: true, alignment: 'center', fontSize: 14, margin: [0, 0, 0, 2] },
-                    entityAddress: { fontSize: 9, alignment: 'center', margin: [0, 0, 0, 5] },
-                    tableHeader: { fontSize: 10, bold: true, color: '#FFFFFF', fillColor: '#1351b4', alignment: 'center' }
-                },
-                defaultStyle: { font: 'Roboto', alignment: 'justify' }
-            };
+                    conteudo.unshift(capa);
 
-            let fileName = '';
-            if (isMultiPage) {
-                fileName = `Declarações_COM_Envio_ao_TCE_${dados.nome.replace(/\s+/g, '_')}.pdf`;
-            } else {
-                const singleDeclId = declaracoes[0].id;
-                if (singleDeclId === 'area_gestora_existe_taxa' || singleDeclId === 'area_gestora_inexiste_taxa') {
-                    fileName = `Declaração_de_Área_Gestora_e_Inexistência_de_Legislação_${dados.nome.replace(/\s+/g, '_')}.pdf`;
-                } else {
-                    fileName = `Declaração_${dados.nome.replace(/\s+/g, '_')}.pdf`;
+                    const docDefinition = {
+                        pageSize: 'A4',
+                        pageMargins: [40, 80, 40, 80],
+                        background: () => watermarkImage ? { image: watermarkImage, width: 595.28, height: 841.89, absolutePosition: { x: 0, y: 0 } } : null,
+                        footer: (currentPage, pageCount) => ({
+                            margin: [40, 10, 40, 0],
+                            stack: [
+                                { canvas: [{ type: 'line', x1: 0, y1: 5, x2: 515, y2: 5, lineWidth: 0.5, lineColor: '#AAAAAA' }], margin: [0, 0, 0, 5] },
+                                {
+                                    columns: [
+                                        { text: rodapes[currentPage - 1] || '', alignment: 'left', fontSize: 8, color: '#555' },
+                                        { text: `Página ${currentPage} de ${pageCount}`, alignment: 'right', fontSize: 8, color: '#555', width: 'auto' }
+                                    ]
+                                }
+                            ]
+                        }),
+                        content: conteudo,
+                        styles: {
+                            header: { fontSize: 12, bold: true, color: '#0c326f' },
+                            entityName: { bold: true, alignment: 'center', fontSize: 14, margin: [0, 0, 0, 2] },
+                            entityAddress: { fontSize: 9, alignment: 'center', margin: [0, 0, 0, 5] },
+                            anexoInfo: { fontSize: 9, alignment: 'center', italics: true, color: '#555555' },
+                            tableHeader: { fontSize: 10, bold: true, color: '#FFFFFF', fillColor: '#1351b4', alignment: 'center' }
+                        },
+                        defaultStyle: { font: 'Roboto', alignment: 'justify' }
+                    };
+
+                    pdfMake.createPdf(docDefinition).download(nomeArquivoAnexos(dados), () => resolve());
+                } catch (error) {
+                    reject(error);
                 }
-            }
+            });
+        };
 
-            pdfMake.createPdf(docDefinition).download(fileName, () => resolve());
-        } catch (error) {
-            reject(error);
-        }
+        const gerarPDFDeclaracaoSeparada = (declaracao, dados, watermarkImage) =>
+            gerarPDFPrincipal([declaracao], dados, watermarkImage);
+
+        const processarGeracaoPDFs = async () => {
+            try {
+                const dados = {
+                    nome: document.getElementById('nomeResponsavel')?.value.trim() || '',
+                    cargo: getCargoInformado(),
+                    cnpj: document.getElementById('cnpj')?.value.trim() || '',
+                    cep: document.getElementById('cep')?.value.trim() || '',
+                    endereco: document.getElementById('endereco')?.value.trim() || '',
+                    complemento: document.getElementById('complemento')?.value.trim() || '',
+                    cidadeUF: document.getElementById('cidadeUF')?.value.trim() || '',
+                    nomeEstadoMunicipio: document.getElementById('nomeEstadoMunicipio')?.value.trim() || '',
+                    nomeEntidade: document.getElementById('nomeEstadoMunicipio')?.value.trim() || nomeEntidadeGlobal || ''
+                };
+
+                if (!dados.cargo) {
+                    showTab('aba1');
+                    validateTab('aba1');
+                    throw new Error('Informe o cargo do responsável na etapa "Responsável".');
+                }
+
+                const configuracoes = {
+                    possuiAreaGestora: document.getElementById('possuiAreaGestora')?.checked || false,
+                    apresentaraCertidoes: document.getElementById('apresentaraCertidoes')?.checked || false,
+                    ate65milHabitantes: document.getElementById('ate65milHabitantes')?.checked || false,
+                    regularPrecatorios: document.getElementById('regularPrecatorios')?.checked || false
+                };
+
+                const declaracaoTipos = Array.from(document.querySelectorAll('input[name="declaracaoTipo"]:checked')).map(cb => cb.value);
+
+                if (declaracaoTipos.length === 0) {
+                    throw new Error('Nenhum tipo de declaração foi selecionado na etapa "Entidade".');
+                }
+
+                let todasDeclaracoesRequeridas = [];
+                declaracaoTipos.forEach(opcao => {
+                    todasDeclaracoesRequeridas.push(...getDeclaracoes(opcao, dados, configuracoes));
+                });
+
+                todasDeclaracoesRequeridas = [...new Map(todasDeclaracoesRequeridas.map(item => [item.id, item])).values()];
+
+                const declaracoesParaArquivoPrincipal = [];
+                const declaracoesParaArquivoSeparado = [];
+
+                todasDeclaracoesRequeridas.forEach(decl => {
+                    if (decl.id === 'area_gestora_inexiste_taxa' || decl.id === 'area_gestora_existe_taxa') {
+                        declaracoesParaArquivoSeparado.push(decl);
+                    } else {
+                        declaracoesParaArquivoPrincipal.push(decl);
+                    }
+                });
+
+                // Anexos da declaração de precatórios judiciais → 3º arquivo, separado (subitens X.1 e X.2)
+                const idxPrecatorios = declaracoesParaArquivoPrincipal.findIndex(d => d.id === 'precatorios_judiciais');
+                let pacoteAnexos = null;
+                if (idxPrecatorios >= 0) {
+                    const faltando = ANEXOS_PRECATORIOS.filter(cfg => !anexosState[cfg.chave]);
+                    if (faltando.length) {
+                        validateTab('aba3');
+                        throw new Error(`Anexe em PDF: ${faltando.map(cfg => cfg.rotulo.toLowerCase()).join(' e ')}.`);
+                    }
+                    pacoteAnexos = {
+                        numeroItem: idxPrecatorios + 1,
+                        declaracao: declaracoesParaArquivoPrincipal[idxPrecatorios],
+                        anexos: ANEXOS_PRECATORIOS.map(cfg => ({
+                            titulo: cfg.titulo,
+                            nomeArquivo: anexosState[cfg.chave].nomeArquivo,
+                            paginas: anexosState[cfg.chave].paginas
+                        }))
+                    };
+                }
+
+                const arquivos = [];
+                if (declaracoesParaArquivoPrincipal.length > 0) {
+                    arquivos.push({ nome: `Declarações_COM_Envio_ao_TCE_${dados.nome.replace(/\s+/g, '_')}.pdf`, detalhe: '' });
+                }
+                if (declaracoesParaArquivoSeparado.length > 0) {
+                    arquivos.push({ nome: `Declaração_de_Área_Gestora_e_Inexistência_de_Legislação_${dados.nome.replace(/\s+/g, '_')}.pdf`, detalhe: '' });
+                }
+                if (pacoteAnexos) {
+                    const n = pacoteAnexos.numeroItem;
+                    const totalPaginas = pacoteAnexos.anexos.reduce((t, a) => t + a.paginas.length, 0);
+                    arquivos.push({
+                        nome: nomeArquivoAnexos(dados),
+                        detalhe: `Anexos ${n}.1 (comprovante de remessa) e ${n}.2 (comprovante de impossibilidade): índice + ${totalPaginas} ${totalPaginas === 1 ? 'página' : 'páginas'} em imagem.`
+                    });
+                }
+
+                const confirmationPopup = document.getElementById('confirmationPopup');
+                const fileList = document.getElementById('fileList');
+                const confirmDownloadBtn = document.getElementById('confirmDownloadBtn');
+                const cancelPopupBtn = document.getElementById('cancelPopupBtn');
+
+                fileList.innerHTML = arquivos
+                    .map(a => `<li>${escapeHtml(a.nome)}${a.detalhe ? `<small>${escapeHtml(a.detalhe)}</small>` : ''}</li>`)
+                    .join('');
+                document.getElementById('assinanteResumo').textContent = `${dados.nome} (${dados.cargo})`;
+                confirmationPopup.classList.add('show');
+                overlay.classList.add('show');
+
+                const closeConfirmationPopup = () => {
+                    confirmationPopup.classList.remove('show');
+                    overlay.classList.remove('show');
+                };
+
+                await new Promise((resolve, reject) => {
+                    const cleanup = () => {
+                        confirmDownloadBtn.removeEventListener('click', onConfirm);
+                        cancelPopupBtn.removeEventListener('click', onCancel);
+                    };
+                    const onConfirm = () => { closeConfirmationPopup(); cleanup(); resolve(); };
+                    const onCancel = () => { closeConfirmationPopup(); cleanup(); reject(new Error('Geração de PDFs cancelada pelo usuário.')); };
+
+                    confirmDownloadBtn.addEventListener('click', onConfirm, { once: true });
+                    cancelPopupBtn.addEventListener('click', onCancel, { once: true });
+                });
+
+                toggleLoading(true, 'Gerando documento(s)...');
+                const watermarkImage = await getBase64ImageFromUrl('https://i.ibb.co/Q7tqVPBb/Folha-Limpa.jpg');
+                let pdfsGerados = 0;
+
+                if (declaracoesParaArquivoPrincipal.length > 0) {
+                    await gerarPDFPrincipal(declaracoesParaArquivoPrincipal, dados, watermarkImage);
+                    pdfsGerados++;
+                }
+
+                for (const decl of declaracoesParaArquivoSeparado) {
+                    await gerarPDFDeclaracaoSeparada(decl, dados, watermarkImage);
+                    pdfsGerados++;
+                }
+
+                if (pacoteAnexos) {
+                    await gerarPDFAnexos(pacoteAnexos, dados, watermarkImage);
+                    pdfsGerados++;
+                }
+
+                if (pdfsGerados > 0) {
+                    showPopup();
+                } else {
+                    throw new Error('Nenhuma declaração foi gerada. Verifique suas seleções e os dados inseridos.');
+                }
+
+            } catch (error) {
+                console.error('Erro ao gerar PDF(s):', error);
+                if (error.message !== 'Geração de PDFs cancelada pelo usuário.') {
+                    alert(error.message || 'Ocorreu um erro ao gerar o(s) documento(s). Tente novamente.');
+                }
+            } finally {
+                toggleLoading(false);
+            }
+        };
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (validateTab(tabs[tabs.length - 1])) {
+                await processarGeracaoPDFs();
+            }
+        });
+
+        pdfMake.fonts = {
+            Roboto: {
+                normal: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/fonts/Roboto/Roboto-Regular.ttf',
+                bold: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/fonts/Roboto/Roboto-Medium.ttf',
+                italics: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/fonts/Roboto/Roboto-Italic.ttf',
+                bolditalics: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/fonts/Roboto/Roboto-MediumItalic.ttf'
+            }
+        };
+
+        showTab('aba1');
     });
-};
-
-const gerarPDFDeclaracaoSeparada = (declaracao, dados, watermarkImage) => {
-    return new Promise((resolve, reject) => {
-        gerarPDFPrincipal([declaracao], dados, watermarkImage).then(resolve).catch(reject);
-    });
-};
-
-const processarGeracaoPDFs = async () => {
-    try {
-        const dados = {
-            nome: document.getElementById('nomeResponsavel')?.value.trim() || '',
-            cargo: getCargoInformado(),
-            cnpj: document.getElementById('cnpj')?.value.trim() || '',
-            cep: document.getElementById('cep')?.value.trim() || '',
-            endereco: document.getElementById('endereco')?.value.trim() || '',
-            complemento: document.getElementById('complemento')?.value.trim() || '',
-            cidadeUF: document.getElementById('cidadeUF')?.value.trim() || '',
-            nomeEstadoMunicipio: document.getElementById('nomeEstadoMunicipio')?.value.trim() || '',
-            nomeEntidade: document.getElementById('nomeEstadoMunicipio')?.value.trim() || nomeEntidadeGlobal || ''
-        };
-
-        if (!dados.cargo) {
-            showTab('aba1');
-            validateTab('aba1');
-            throw new Error('Informe o cargo do responsável na etapa "Responsável".');
-        }
-
-        const configuracoes = {
-            possuiAreaGestora: document.getElementById('possuiAreaGestora')?.checked || false,
-            apresentaraCertidoes: document.getElementById('apresentaraCertidoes')?.checked || false,
-            ate65milHabitantes: document.getElementById('ate65milHabitantes')?.checked || false,
-            regularPrecatorios: document.getElementById('regularPrecatorios')?.checked || false
-        };
-
-        const declaracaoTipos = Array.from(document.querySelectorAll('input[name="declaracaoTipo"]:checked')).map(cb => cb.value);
-
-        if (declaracaoTipos.length === 0) {
-            throw new Error('Nenhum tipo de declaração foi selecionado na etapa "Entidade".');
-        }
-
-        let todasDeclaracoesRequeridas = [];
-        declaracaoTipos.forEach(opcao => {
-            todasDeclaracoesRequeridas.push(...getDeclaracoes(opcao, dados, configuracoes));
-        });
-
-        todasDeclaracoesRequeridas = [...new Map(todasDeclaracoesRequeridas.map(item => [item.id, item])).values()];
-
-        const declaracoesParaArquivoPrincipal = [];
-        const declaracoesParaArquivoSeparado = [];
-
-        todasDeclaracoesRequeridas.forEach(decl => {
-            if (decl.id === 'area_gestora_inexiste_taxa' || decl.id === 'area_gestora_existe_taxa') {
-                declaracoesParaArquivoSeparado.push(decl);
-            } else {
-                declaracoesParaArquivoPrincipal.push(decl);
-            }
-        });
-
-        const fileNames = [];
-        if (declaracoesParaArquivoPrincipal.length > 0) {
-            fileNames.push(`Declarações_COM_Envio_ao_TCE_${dados.nome.replace(/\s+/g, '_')}.pdf`);
-        }
-        if (declaracoesParaArquivoSeparado.length > 0) {
-            fileNames.push(`Declaração_de_Área_Gestora_e_Inexistência_de_Legislação_${dados.nome.replace(/\s+/g, '_')}.pdf`);
-        }
-
-        const confirmationPopup = document.getElementById('confirmationPopup');
-        const fileList = document.getElementById('fileList');
-        const confirmDownloadBtn = document.getElementById('confirmDownloadBtn');
-        const cancelPopupBtn = document.getElementById('cancelPopupBtn');
-
-        fileList.innerHTML = fileNames.map(name => `<li>${name}</li>`).join('');
-        document.getElementById('assinanteResumo').textContent = `${dados.nome} (${dados.cargo})`;
-        confirmationPopup.classList.add('show');
-        overlay.classList.add('show');
-
-        const closeConfirmationPopup = () => {
-            confirmationPopup.classList.remove('show');
-            overlay.classList.remove('show');
-        };
-
-        await new Promise((resolve, reject) => {
-            const onConfirm = () => {
-                closeConfirmationPopup();
-                cleanup();
-                resolve();
-            };
-
-            const onCancel = () => {
-                closeConfirmationPopup();
-                cleanup();
-                reject(new Error('Geração de PDFs cancelada pelo usuário.'));
-            };
-
-            const cleanup = () => {
-                confirmDownloadBtn.removeEventListener('click', onConfirm);
-                cancelPopupBtn.removeEventListener('click', onCancel);
-            };
-
-            confirmDownloadBtn.addEventListener('click', onConfirm, { once: true });
-            cancelPopupBtn.addEventListener('click', onCancel, { once: true });
-        });
-
-        toggleLoading(true, 'Gerando documento(s)...');
-        const watermarkImage = await getBase64ImageFromUrl('https://i.ibb.co/Q7tqVPBb/Folha-Limpa.jpg');
-        let pdfsGerados = 0;
-
-        if (declaracoesParaArquivoPrincipal.length > 0) {
-            await gerarPDFPrincipal(declaracoesParaArquivoPrincipal, dados, watermarkImage);
-            pdfsGerados++;
-        }
-
-        if (declaracoesParaArquivoSeparado.length > 0) {
-            for (const decl of declaracoesParaArquivoSeparado) {
-                await gerarPDFDeclaracaoSeparada(decl, dados, watermarkImage);
-                pdfsGerados++;
-            }
-        }
-
-        if (pdfsGerados > 0) {
-            showPopup();
-        } else {
-            throw new Error('Nenhuma declaração foi gerada. Verifique suas seleções e os dados inseridos.');
-        }
-
-    } catch (error) {
-        console.error('Erro ao gerar PDF(s):', error);
-        if (error.message !== 'Geração de PDFs cancelada pelo usuário.') {
-            alert(error.message || 'Ocorreu um erro ao gerar o(s) documento(s). Tente novamente.');
-        }
-    } finally {
-        toggleLoading(false);
-    }
-};
-form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (validateTab(tabs[tabs.length - 1])) {
-        await processarGeracaoPDFs();
-    }
-});
-
-pdfMake.fonts = {
-    Roboto: {
-        normal: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/fonts/Roboto/Roboto-Regular.ttf',
-        bold: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/fonts/Roboto/Roboto-Medium.ttf',
-        italics: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/fonts/Roboto/Roboto-Italic.ttf',
-        bolditalics: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/fonts/Roboto/Roboto-MediumItalic.ttf'
-    }
-};
-
-showTab('aba1');
-});
 </script>
 </body>
 </html>
