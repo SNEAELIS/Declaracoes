@@ -1585,6 +1585,12 @@
         };
 
         // Cabeçalho com nome e endereço da entidade (repetido em todas as páginas)
+        // Nome do arquivo da Área Gestora conforme a opção marcada (Existência × Inexistência)
+        const nomeArquivoAreaGestora = (declId, nomeResponsavel) => {
+            const tipo = declId === 'area_gestora_existe_taxa' ? 'Existência' : 'Inexistência';
+            return `Declaração_de_${tipo}_de_Área_Gestora_${nomeResponsavel.replace(/\s+/g, '_')}.pdf`;
+        };
+
         const cabecalhoEntidade = (dados) => ([
             { text: dados.nomeEntidade || 'Entidade não informada', style: 'entityName' },
             { text: `${dados.endereco || 'Endereço não informado'} - ${dados.cidadeUF || 'Município/UF não informado'} - CEP: ${dados.cep || 'CEP não informado'}`, style: 'entityAddress' },
@@ -1772,7 +1778,7 @@
                     } else {
                         const singleDeclId = declaracoes[0].id;
                         if (singleDeclId === 'area_gestora_existe_taxa' || singleDeclId === 'area_gestora_inexiste_taxa') {
-                            fileName = `Declaração_de_Área_Gestora_e_Inexistência_de_Legislação_${dados.nome.replace(/\s+/g, '_')}.pdf`;
+                            fileName = nomeArquivoAreaGestora(singleDeclId, dados.nome);
                         } else {
                             fileName = `Declaração_${dados.nome.replace(/\s+/g, '_')}.pdf`;
                         }
@@ -1969,7 +1975,7 @@
                 }
                 declaracoesParaArquivoSeparado.forEach(decl => {
                     plano.push({
-                        nome: `Declaração_de_Área_Gestora_e_Inexistência_de_Legislação_${nomeArq}.pdf`,
+                        nome: nomeArquivoAreaGestora(decl.id, dados.nome),
                         detalhe: decl.id === 'area_gestora_existe_taxa' ? 'Existência de área gestora.' : 'Inexistência de área gestora.',
                         gerar: (wm) => gerarPDFPrincipal([decl], dados, wm)
                     });
