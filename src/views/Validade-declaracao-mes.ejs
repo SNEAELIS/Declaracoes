@@ -332,6 +332,31 @@
         .file-preview .meta .ok { color: var(--success); font-weight: 600; }
         .file-preview .acoes { display: flex; flex-direction: column; gap: 6px; flex: 0 0 auto; }
 
+        .checkbox-item input[type="radio"] {
+            width: 22px; height: 22px; margin-top: 1px; accent-color: var(--accent); cursor: pointer; flex: 0 0 auto;
+        }
+        .extras { margin-top: 26px; padding-top: 18px; border-top: 1px dashed var(--border); }
+        .upload-subtitle { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+        #anexosExtras { margin-top: 14px; }
+        #anexosExtras .upload-group {
+            margin-bottom: 16px; padding: 14px; border: 1px solid var(--border); border-radius: var(--radius);
+        }
+        .extra-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .extra-desc { margin-top: 12px; }
+        .extra-desc label { font-size: .85rem; margin-bottom: 6px; }
+
+        .acoes-finais { display: flex; gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
+
+        .download-list { list-style: none; margin: 16px 0; text-align: left; }
+        .download-list li {
+            display: flex; align-items: center; gap: 12px; padding: 10px 12px;
+            background: var(--gray-5); border-radius: 6px; margin-bottom: 8px;
+        }
+        .download-list li > i { color: var(--accent); font-size: 1.2rem; flex: 0 0 auto; }
+        .download-list .nome { flex: 1; min-width: 0; font-size: .88rem; word-break: break-all; }
+        .download-list small { display: block; color: var(--text-muted); font-size: .8rem; word-break: normal; margin-top: 2px; }
+        .download-list a.br-button { text-decoration: none; flex: 0 0 auto; }
+
         /* Botões padrão gov.br */
         .button-bar {
             display: flex; justify-content: space-between; gap: 14px;
@@ -417,6 +442,9 @@
             .stepper-wrapper::before, .stepper-progress { top: 18px; }
             .file-preview { flex-wrap: wrap; }
             .file-preview .acoes { flex-direction: row; width: 100%; }
+            .button-bar .acoes-finais { flex-direction: column-reverse; width: 100%; }
+            .download-list li { flex-wrap: wrap; }
+            .download-list a.br-button { width: 100%; }
         }
     </style>
 </head>
@@ -601,7 +629,25 @@
 
                 <!-- ETAPA 3 -->
                 <div id="aba3" class="tab">
-                    <section class="section">
+                    <section class="section" id="modoGeracaoSection">
+                        <h2>O que você quer gerar?</h2>
+                        <div class="checkbox-group" role="radiogroup" aria-label="Tipo de geração">
+                            <div class="checkbox-item">
+                                <input type="radio" name="modoGeracao" id="modoCompleto" value="completo" checked>
+                                <label for="modoCompleto">Declarações completas
+                                    <span class="field-hint">Gera todas as declarações aplicáveis e, quando exigido, o arquivo de anexos.</span>
+                                </label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="radio" name="modoGeracao" id="modoAnexos" value="anexos">
+                                <label for="modoAnexos">Somente o arquivo de anexos (complementação)
+                                    <span class="field-hint">Use quando a SNEAELIS pedir documentos que faltaram. Gera apenas o PDF de anexos com o que você enviar agora — as declarações não são refeitas.</span>
+                                </label>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="section" id="configuracoesSection">
                         <h2>Configuração das declarações</h2>
                         <p class="helper">Marque as opções que correspondem à realidade do seu município.</p>
                         <div class="checkbox-group" id="configuracoesGroup">
@@ -612,7 +658,7 @@
                     <!-- ANEXOS DA DECLARAÇÃO DE PRECATÓRIOS (exibido quando NÃO houver certidões TJ/TRT/TRF) -->
                     <section class="section" id="anexosPrecatoriosSection" aria-labelledby="anexosTitulo" hidden>
                         <h2 id="anexosTitulo">Anexos da declaração de precatórios judiciais</h2>
-                        <p class="helper">
+                        <p class="helper" id="anexosHelper">
                             Como o município <strong>não apresentará</strong> as certidões do TJ, do TRT e do TRF, a Declaração de
                             Regularidade no Pagamento de Precatórios Judiciais só é aceita acompanhada dos dois documentos abaixo
                             (art. 29, inciso II, c/c § 6º, da Portaria Conjunta MGI/MF/CGU nº 33/2023).
@@ -628,13 +674,14 @@
                                     <li>O PDF não pode estar protegido por senha e precisa estar legível (para digitalizações, use de 150 a 300 dpi).</li>
                                     <li>Os anexos <strong>não entram no arquivo das declarações</strong>: eles são gerados em um <strong>terceiro PDF, separado</strong> (“Anexos_Declaração_de_Precatórios_Judiciais”), com página de índice e os subitens <strong>1.1</strong> e <strong>1.2</strong>.</li>
                                     <li>Cada página do PDF enviado é inserida <strong>como imagem</strong> nesse arquivo de anexos, com o cabeçalho da entidade e a identificação do subitem.</li>
+                                    <li>Se a SNEAELIS pedir documentos depois, volte aqui, escolha <strong>“Somente o arquivo de anexos”</strong> no topo desta etapa e envie apenas o que falta.</li>
                                 </ul>
                             </div>
                         </div>
 
                         <div class="upload-grid">
                             <div class="form-group upload-group" data-anexo="remessa">
-                                <span class="upload-title"><span class="subitem">1.1</span>Comprovante de remessa ao Tribunal de Contas <span class="req" aria-hidden="true">*</span></span>
+                                <span class="upload-title"><span class="subitem">1.1</span>Comprovante de remessa ao Tribunal de Contas <span class="req req-fixo" aria-hidden="true">*</span></span>
                                 <span class="field-hint">Protocolo, recibo ou e-mail de envio da declaração ao Tribunal de Contas competente (TCE/TCM), com a data visível.</span>
                                 <input type="file" id="anexoRemessa" class="sr-only" accept="application/pdf,.pdf" aria-describedby="erroAnexoRemessa">
                                 <label class="dropzone" for="anexoRemessa">
@@ -647,7 +694,7 @@
                             </div>
 
                             <div class="form-group upload-group" data-anexo="impossibilidade">
-                                <span class="upload-title"><span class="subitem">1.2</span>Comprovante de impossibilidade de emissão das certidões <span class="req" aria-hidden="true">*</span></span>
+                                <span class="upload-title"><span class="subitem">1.2</span>Comprovante de impossibilidade de emissão das certidões <span class="req req-fixo" aria-hidden="true">*</span></span>
                                 <span class="field-hint">Documento que comprove que as certidões do TJ, do TRT e/ou do TRF não puderam ser emitidas (tela de erro, resposta do tribunal, ofício etc.).</span>
                                 <input type="file" id="anexoImpossibilidade" class="sr-only" accept="application/pdf,.pdf" aria-describedby="erroAnexoImpossibilidade">
                                 <label class="dropzone" for="anexoImpossibilidade">
@@ -659,11 +706,21 @@
                                 <span class="error-message" id="erroAnexoImpossibilidade" aria-live="polite"></span>
                             </div>
                         </div>
+
+                        <div class="extras">
+                            <h3 class="upload-subtitle">Outros anexos (opcional)</h3>
+                            <span class="field-hint">Documentos adicionais pedidos pela SNEAELIS. Eles entram no mesmo arquivo de anexos, numerados a partir de 1.3.</span>
+                            <div id="anexosExtras"></div>
+                            <button type="button" class="br-button secondary small" id="addAnexoExtra"><i class="fa-solid fa-plus" aria-hidden="true"></i> Adicionar outro anexo</button>
+                        </div>
                     </section>
 
                     <div class="button-bar">
                         <button type="button" class="br-button secondary nav-button" data-prev-tab="aba2"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Voltar</button>
-                        <button type="submit" class="br-button primary" id="gerarPDFBtn"><i class="fa-solid fa-check" aria-hidden="true"></i> Gerar PDF</button>
+                        <div class="acoes-finais">
+                            <button type="button" class="br-button secondary" id="reabrirArquivosBtn" hidden><i class="fa-solid fa-folder-open" aria-hidden="true"></i> Arquivos gerados</button>
+                            <button type="submit" class="br-button primary" id="gerarPDFBtn"><i class="fa-solid fa-check" aria-hidden="true"></i> Gerar PDF</button>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -675,10 +732,14 @@
     </main>
 
     <!-- ===================== POPUPS ===================== -->
-    <div id="successPopup" class="popup" role="alert" aria-hidden="true">
-        <h3><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Tudo certo</h3>
-        <p>Documento(s) baixado(s) com sucesso!</p>
-        <div class="btn-row"><button class="br-button primary" id="closePopupBtn" type="button">Fechar</button></div>
+    <div id="successPopup" class="popup" role="dialog" aria-modal="true" aria-labelledby="sucessoTitulo" aria-hidden="true">
+        <h3 id="sucessoTitulo"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Documentos prontos</h3>
+        <p>Baixe cada arquivo no botão ao lado do nome ou todos juntos em um .zip.</p>
+        <ul id="downloadList" class="download-list"></ul>
+        <div class="btn-row">
+            <button class="br-button secondary" id="closePopupBtn" type="button">Fechar</button>
+            <button class="br-button primary" id="baixarZipBtn" type="button"><i class="fa-solid fa-file-zipper" aria-hidden="true"></i> Baixar todos (.zip)</button>
+        </div>
     </div>
 
     <div id="overlay" class="overlay" aria-hidden="true"></div>
@@ -715,6 +776,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
     <!-- pdf.js: lê o PDF anexado e converte cada página em imagem -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <!-- JSZip: botão "Baixar todos (.zip)" -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -734,6 +797,12 @@
         const loadingMessage = document.getElementById('loadingMessage');
         const anexosSection = document.getElementById('anexosPrecatoriosSection');
         const configuracoesGroupEl = document.getElementById('configuracoesGroup');
+        const configuracoesSection = document.getElementById('configuracoesSection');
+        const anexosHelper = document.getElementById('anexosHelper');
+        const gerarPDFBtn = document.getElementById('gerarPDFBtn');
+        const baixarZipBtn = document.getElementById('baixarZipBtn');
+        const reabrirArquivosBtn = document.getElementById('reabrirArquivosBtn');
+        const modoAnexosApenas = () => !!document.getElementById('modoAnexos')?.checked;
         const tabs = ['aba1', 'aba2', 'aba3'];
         let nomeEntidadeGlobal = '';
 
@@ -837,17 +906,7 @@
                     if (!validateInput(input)) isTabValid = false;
                 });
             }
-            if (tabId === 'aba3' && precisaAnexosPrecatorios()) {
-                let primeiroInvalido = null;
-                ANEXOS_PRECATORIOS.forEach(cfg => {
-                    if (!anexosState[cfg.chave]) {
-                        definirErroAnexo(cfg, `Anexe o ${cfg.rotulo.toLowerCase()} em PDF para continuar.`);
-                        isTabValid = false;
-                        if (!primeiroInvalido) primeiroInvalido = grupoAnexo(cfg);
-                    }
-                });
-                if (primeiroInvalido) primeiroInvalido.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
+            if (tabId === 'aba3' && !validarAnexos()) isTabValid = false;
             const nextButton = tab.querySelector('.nav-button[data-next-tab]');
             if (nextButton) nextButton.disabled = !isTabValid;
             return isTabValid;
@@ -1000,7 +1059,57 @@
         };
 
         closePopupBtn.addEventListener('click', closePopup);
-        overlay.addEventListener('click', closePopup);
+        reabrirArquivosBtn.addEventListener('click', showPopup);
+
+        // =====================================================================
+        // DOWNLOADS: nada é baixado automaticamente. Os PDFs são gerados em
+        // memória e cada um ganha um botão "Baixar" (clique do usuário), o que
+        // evita o bloqueio de "vários downloads" dos navegadores.
+        // =====================================================================
+        let urlsGerados = [];
+        let arquivosGerados = [];
+        let nomeZip = 'Documentos.zip';
+
+        const mostrarResultados = (arquivos, zipNome) => {
+            urlsGerados.forEach(u => URL.revokeObjectURL(u));
+            urlsGerados = [];
+            arquivosGerados = arquivos;
+            nomeZip = zipNome;
+
+            const lista = document.getElementById('downloadList');
+            lista.innerHTML = '';
+            arquivos.forEach(a => {
+                const url = URL.createObjectURL(a.blob);
+                urlsGerados.push(url);
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <i class="fa-solid fa-file-pdf" aria-hidden="true"></i>
+                    <span class="nome">${escapeHtml(a.nome)}${a.detalhe ? `<small>${escapeHtml(a.detalhe)}</small>` : ''}</span>
+                    <a class="br-button primary small" href="${url}" download="${escapeHtml(a.nome)}"><i class="fa-solid fa-download" aria-hidden="true"></i> Baixar</a>`;
+                lista.appendChild(li);
+            });
+            baixarZipBtn.hidden = arquivos.length < 2;
+            reabrirArquivosBtn.hidden = false;
+            showPopup();
+        };
+
+        baixarZipBtn.addEventListener('click', async () => {
+            if (!window.JSZip) {
+                alert('Não foi possível carregar o compactador. Baixe os arquivos um por um.');
+                return;
+            }
+            const zip = new JSZip();
+            arquivosGerados.forEach(a => zip.file(a.nome, a.blob));
+            const blob = await zip.generateAsync({ type: 'blob' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = nomeZip;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 15000);
+        });
 
         // =====================================================================
         // ANEXOS EM PDF — comprovante de remessa e de impossibilidade
@@ -1013,12 +1122,14 @@
         const ANEXOS_PRECATORIOS = [
             {
                 chave: 'remessa',
+                subnumero: '1.1',
                 inputId: 'anexoRemessa',
                 rotulo: 'Comprovante de remessa',
                 titulo: 'COMPROVANTE DE REMESSA DA DECLARAÇÃO AO TRIBUNAL DE CONTAS'
             },
             {
                 chave: 'impossibilidade',
+                subnumero: '1.2',
                 inputId: 'anexoImpossibilidade',
                 rotulo: 'Comprovante de impossibilidade',
                 titulo: 'COMPROVANTE DE IMPOSSIBILIDADE DE EMISSÃO DAS CERTIDÕES JUDICIAIS (TJ, TRT E TRF)'
@@ -1149,7 +1260,8 @@
             }
         };
 
-        ANEXOS_PRECATORIOS.forEach(cfg => {
+        // --- Liga upload, arrastar-e-soltar e botões de um slot de anexo ---
+        const vincularSlotAnexo = (cfg) => {
             const input = document.getElementById(cfg.inputId);
             const grupo = grupoAnexo(cfg);
             const dropzone = grupo.querySelector('.dropzone');
@@ -1177,15 +1289,129 @@
                     input.focus();
                 } else if (botao.dataset.acao === 'substituir') {
                     input.click();
+                } else if (botao.dataset.acao === 'excluir') {
+                    excluirAnexoExtra(cfg);
                 }
             });
-        });
+        };
+
+        ANEXOS_PRECATORIOS.forEach(vincularSlotAnexo);
+
+        // --- Anexos complementares (1.3, 1.4, ...) ---
+        let anexosExtras = [];
+        let contadorExtras = 0;
+        const todosSlots = () => [...ANEXOS_PRECATORIOS, ...anexosExtras];
+        const descricaoExtra = (cfg) => (document.getElementById(`${cfg.inputId}Desc`)?.value || '').trim().replace(/\s+/g, ' ');
+        const tituloSlot = (cfg) => cfg.extra ? (descricaoExtra(cfg).toUpperCase() || 'DOCUMENTO COMPLEMENTAR') : cfg.titulo;
+
+        const renumerarExtras = () => {
+            anexosExtras.forEach((cfg, i) => {
+                cfg.subnumero = `1.${i + 3}`;
+                cfg.rotulo = `Anexo ${cfg.subnumero}`;
+                const badge = grupoAnexo(cfg)?.querySelector('.subitem');
+                if (badge) badge.textContent = cfg.subnumero;
+            });
+        };
+
+        const adicionarAnexoExtra = () => {
+            contadorExtras++;
+            const cfg = { chave: `extra${contadorExtras}`, inputId: `anexoExtra${contadorExtras}`, extra: true, subnumero: '', rotulo: '' };
+            const div = document.createElement('div');
+            div.className = 'form-group upload-group';
+            div.dataset.anexo = cfg.chave;
+            div.innerHTML = `
+                <div class="extra-head">
+                    <span class="upload-title"><span class="subitem"></span>Anexo complementar</span>
+                    <button type="button" class="br-button secondary small" data-acao="excluir"><i class="fa-solid fa-trash" aria-hidden="true"></i> Excluir</button>
+                </div>
+                <div class="extra-desc">
+                    <label for="${cfg.inputId}Desc">Descrição do documento <span class="req" aria-hidden="true">*</span></label>
+                    <input type="text" id="${cfg.inputId}Desc" maxlength="150" placeholder="Ex.: Ofício nº 123/2026 – resposta do TJ">
+                </div>
+                <input type="file" id="${cfg.inputId}" class="sr-only" accept="application/pdf,.pdf">
+                <label class="dropzone" for="${cfg.inputId}">
+                    <i class="fa-solid fa-file-arrow-up" aria-hidden="true"></i>
+                    <span><strong>Clique para selecionar</strong> ou arraste o PDF aqui</span>
+                    <small>Somente .pdf, até 10 MB</small>
+                </label>
+                <div class="file-preview" hidden></div>
+                <span class="error-message" aria-live="polite"></span>`;
+            document.getElementById('anexosExtras').appendChild(div);
+            anexosExtras.push(cfg);
+            renumerarExtras();
+            vincularSlotAnexo(cfg);
+            document.getElementById(`${cfg.inputId}Desc`).addEventListener('input', () => {
+                if (anexosState[cfg.chave]) definirErroAnexo(cfg, '');
+            });
+            document.getElementById(`${cfg.inputId}Desc`).focus();
+        };
+
+        const excluirAnexoExtra = (cfg) => {
+            delete anexosState[cfg.chave];
+            grupoAnexo(cfg)?.remove();
+            anexosExtras = anexosExtras.filter(c => c !== cfg);
+            renumerarExtras();
+            document.getElementById('addAnexoExtra').focus();
+        };
+
+        document.getElementById('addAnexoExtra').addEventListener('click', adicionarAnexoExtra);
+
+        // Anexos com arquivo, na ordem 1.1, 1.2, 1.3...
+        const anexosSelecionados = () => todosSlots()
+            .filter(cfg => anexosState[cfg.chave])
+            .map(cfg => ({
+                subnumero: cfg.subnumero,
+                titulo: tituloSlot(cfg),
+                nomeArquivo: anexosState[cfg.chave].nomeArquivo,
+                paginas: anexosState[cfg.chave].paginas
+            }));
+
+        const validarAnexos = () => {
+            if (anexosSection.hidden) return true;
+            const modoAnexos = modoAnexosApenas();
+            let ok = true;
+            let primeiro = null;
+            const marcar = (cfg, msg) => {
+                definirErroAnexo(cfg, msg);
+                ok = false;
+                if (!primeiro) primeiro = grupoAnexo(cfg);
+            };
+
+            if (!modoAnexos) {
+                ANEXOS_PRECATORIOS.forEach(cfg => {
+                    if (!anexosState[cfg.chave]) marcar(cfg, `Anexe o ${cfg.rotulo.toLowerCase()} em PDF para continuar.`);
+                });
+            }
+            anexosExtras.forEach(cfg => {
+                if (!anexosState[cfg.chave]) marcar(cfg, 'Anexe o PDF deste item ou clique em Excluir.');
+                else if (!descricaoExtra(cfg)) marcar(cfg, 'Informe a descrição do documento.');
+            });
+            if (modoAnexos && ok && !todosSlots().some(cfg => anexosState[cfg.chave])) {
+                marcar(ANEXOS_PRECATORIOS[0], 'Anexe ao menos um documento em PDF (1.1, 1.2 ou um anexo complementar).');
+            }
+            if (primeiro) primeiro.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return ok;
+        };
+
+        const TEXTO_HELPER_COMPLETO = anexosHelper.innerHTML;
+        const TEXTO_HELPER_COMPLEMENTO = `Envie <strong>somente os documentos que estão faltando</strong>. Será gerado apenas o PDF de anexos, mantendo a numeração:
+            1.1 para o comprovante de remessa, 1.2 para o comprovante de impossibilidade e 1.3 em diante para documentos complementares.
+            As declarações não são geradas novamente.`;
 
         const atualizarSecaoAnexos = () => {
-            const precisa = precisaAnexosPrecatorios();
-            anexosSection.hidden = !precisa;
-            if (!precisa) ANEXOS_PRECATORIOS.forEach(cfg => definirErroAnexo(cfg, ''));
+            const modoAnexos = modoAnexosApenas();
+            configuracoesSection.hidden = modoAnexos;
+            const mostrar = modoAnexos || precisaAnexosPrecatorios();
+            anexosSection.hidden = !mostrar;
+            document.querySelectorAll('.req-fixo').forEach(el => { el.hidden = modoAnexos; });
+            anexosHelper.innerHTML = modoAnexos ? TEXTO_HELPER_COMPLEMENTO : TEXTO_HELPER_COMPLETO;
+            gerarPDFBtn.innerHTML = modoAnexos
+                ? '<i class="fa-solid fa-paperclip" aria-hidden="true"></i> Gerar arquivo de anexos'
+                : '<i class="fa-solid fa-check" aria-hidden="true"></i> Gerar PDF';
+            todosSlots().forEach(cfg => definirErroAnexo(cfg, ''));
         };
+
+        document.querySelectorAll('input[name="modoGeracao"]').forEach(r => r.addEventListener('change', atualizarSecaoAnexos));
 
         configuracoesGroupEl.addEventListener('change', (e) => {
             if (e.target.id === 'apresentaraCertidoes') atualizarSecaoAnexos();
@@ -1552,7 +1778,7 @@
                         }
                     }
 
-                    pdfMake.createPdf(docDefinition).download(fileName, () => resolve());
+                    pdfMake.createPdf(docDefinition).getBlob(blob => resolve({ nome: fileName, blob }));
                 } catch (error) {
                     reject(error);
                 }
@@ -1560,36 +1786,47 @@
         };
 
         // ===== 3º DOCUMENTO: ANEXOS DA DECLARAÇÃO DE PRECATÓRIOS (arquivo separado) =====
-        const nomeArquivoAnexos = (dados) => `Anexos_Declaração_de_Precatórios_Judiciais_${dados.nome.replace(/\s+/g, '_')}.pdf`;
+        const TITULO_DECL_PRECATORIOS = 'DECLARAÇÃO DE REGULARIDADE NO PAGAMENTO DE PRECATÓRIOS JUDICIAIS';
+        const nomeArquivoAnexos = (dados, complementacao) =>
+            `${complementacao ? 'Anexos_Complementares' : 'Anexos'}_Declaração_de_Precatórios_Judiciais_${dados.nome.replace(/\s+/g, '_')}.pdf`;
 
-        const gerarPDFAnexos = ({ anexos, numeroItem, declaracao }, dados, watermarkImage) => {
+        const gerarPDFAnexos = (anexos, dados, watermarkImage, { complementacao = false } = {}) => {
             return new Promise((resolve, reject) => {
                 try {
-                    const tituloDeclaracao = declaracao.title.split('\n')[0];
+                    const declaracao = { title: TITULO_DECL_PRECATORIOS };
                     const conteudo = [];
-                    const rodapes = ['Índice dos anexos da Declaração de Regularidade no Pagamento de Precatórios Judiciais'];
+                    const rodapes = [complementacao
+                        ? 'Índice dos anexos complementares da Declaração de Regularidade no Pagamento de Precatórios Judiciais'
+                        : 'Índice dos anexos da Declaração de Regularidade no Pagamento de Precatórios Judiciais'];
                     const indice = [];
 
-                    anexos.forEach((anexo, j) => {
-                        const subnumero = `${numeroItem}.${j + 1}`;
+                    anexos.forEach((anexo) => {
                         const paginaInicial = rodapes.length + 1;
                         anexo.paginas.forEach((img, k) => {
-                            conteudo.push(createAnexoPageContent({ anexo, subnumero, img, indicePagina: k, declaracao, dados }));
-                            rodapes.push(`Anexo ${subnumero} – página ${k + 1} de ${anexo.paginas.length} do arquivo enviado`);
+                            conteudo.push(createAnexoPageContent({ anexo, subnumero: anexo.subnumero, img, indicePagina: k, declaracao, dados }));
+                            rodapes.push(`Anexo ${anexo.subnumero} – página ${k + 1} de ${anexo.paginas.length} do arquivo enviado`);
                         });
-                        indice.push({ subnumero, titulo: anexo.titulo, nomeArquivo: anexo.nomeArquivo, paginaInicial, paginaFinal: rodapes.length });
+                        indice.push({ subnumero: anexo.subnumero, titulo: anexo.titulo, nomeArquivo: anexo.nomeArquivo, paginaInicial, paginaFinal: rodapes.length });
                     });
 
-                    // Página 1: capa com índice dos anexos
+                    const hoje = new Date().toLocaleDateString('pt-BR');
                     const capa = {
                         stack: [
                             ...cabecalhoEntidade(dados),
-                            { text: 'ANEXOS DA DECLARAÇÃO DE REGULARIDADE NO PAGAMENTO DE PRECATÓRIOS JUDICIAIS', style: 'header', alignment: 'center', margin: [0, 15, 0, 6] },
+                            {
+                                text: complementacao
+                                    ? 'ANEXOS COMPLEMENTARES DA DECLARAÇÃO DE REGULARIDADE NO PAGAMENTO DE PRECATÓRIOS JUDICIAIS'
+                                    : 'ANEXOS DA DECLARAÇÃO DE REGULARIDADE NO PAGAMENTO DE PRECATÓRIOS JUDICIAIS',
+                                style: 'header', alignment: 'center', margin: [0, 15, 0, 6]
+                            },
                             { text: 'ART. 29, INCISO II, C/C § 6º DA PORTARIA CONJUNTA MGI/MF/CGU Nº 33, DE 30 DE AGOSTO DE 2023', style: 'header', fontSize: 10, alignment: 'center', margin: [0, 0, 0, 18] },
                             {
-                                text: `Documentos que acompanham a ${tituloDeclaracao} (item ${numeroItem} do arquivo de declarações), apresentados em razão da impossibilidade de emissão das certidões do TJ, do TRT e do TRF, conforme o § 6º do art. 29 da referida Portaria Conjunta.`,
-                                fontSize: 11, alignment: 'justify', lineHeight: 1.15, margin: [0, 0, 0, 14]
+                                text: complementacao
+                                    ? `Documentos encaminhados em complementação aos anexos da Declaração de Regularidade no Pagamento de Precatórios Judiciais (item 1 do arquivo de declarações), conforme solicitação da SNEAELIS/Ministério do Esporte. A numeração dos subitens segue a do arquivo de anexos original.`
+                                    : `Documentos que acompanham a Declaração de Regularidade no Pagamento de Precatórios Judiciais (item 1 do arquivo de declarações), apresentados em razão da impossibilidade de emissão das certidões do TJ, do TRT e do TRF, conforme o § 6º do art. 29 da referida Portaria Conjunta.`,
+                                fontSize: 11, alignment: 'justify', lineHeight: 1.15, margin: [0, 0, 0, 8]
                             },
+                            { text: `Arquivo gerado em ${hoje}.`, fontSize: 9, italics: true, color: '#555555', margin: [0, 0, 0, 14] },
                             {
                                 table: {
                                     headerRows: 1,
@@ -1651,7 +1888,8 @@
                         defaultStyle: { font: 'Roboto', alignment: 'justify' }
                     };
 
-                    pdfMake.createPdf(docDefinition).download(nomeArquivoAnexos(dados), () => resolve());
+                    const nome = nomeArquivoAnexos(dados, complementacao);
+                    pdfMake.createPdf(docDefinition).getBlob(blob => resolve({ nome, blob }));
                 } catch (error) {
                     reject(error);
                 }
@@ -1681,80 +1919,82 @@
                     throw new Error('Informe o cargo do responsável na etapa "Responsável".');
                 }
 
-                const configuracoes = {
-                    possuiAreaGestora: document.getElementById('possuiAreaGestora')?.checked || false,
-                    apresentaraCertidoes: document.getElementById('apresentaraCertidoes')?.checked || false,
-                    ate65milHabitantes: document.getElementById('ate65milHabitantes')?.checked || false,
-                    regularPrecatorios: document.getElementById('regularPrecatorios')?.checked || false
-                };
-
-                const declaracaoTipos = Array.from(document.querySelectorAll('input[name="declaracaoTipo"]:checked')).map(cb => cb.value);
-
-                if (declaracaoTipos.length === 0) {
-                    throw new Error('Nenhum tipo de declaração foi selecionado na etapa "Entidade".');
-                }
-
-                let todasDeclaracoesRequeridas = [];
-                declaracaoTipos.forEach(opcao => {
-                    todasDeclaracoesRequeridas.push(...getDeclaracoes(opcao, dados, configuracoes));
-                });
-
-                todasDeclaracoesRequeridas = [...new Map(todasDeclaracoesRequeridas.map(item => [item.id, item])).values()];
+                const modoAnexos = modoAnexosApenas();
+                const nomeArq = dados.nome.replace(/\s+/g, '_');
 
                 const declaracoesParaArquivoPrincipal = [];
                 const declaracoesParaArquivoSeparado = [];
 
-                todasDeclaracoesRequeridas.forEach(decl => {
-                    if (decl.id === 'area_gestora_inexiste_taxa' || decl.id === 'area_gestora_existe_taxa') {
-                        declaracoesParaArquivoSeparado.push(decl);
-                    } else {
-                        declaracoesParaArquivoPrincipal.push(decl);
-                    }
-                });
-
-                // Anexos da declaração de precatórios judiciais → 3º arquivo, separado (subitens X.1 e X.2)
-                const idxPrecatorios = declaracoesParaArquivoPrincipal.findIndex(d => d.id === 'precatorios_judiciais');
-                let pacoteAnexos = null;
-                if (idxPrecatorios >= 0) {
-                    const faltando = ANEXOS_PRECATORIOS.filter(cfg => !anexosState[cfg.chave]);
-                    if (faltando.length) {
-                        validateTab('aba3');
-                        throw new Error(`Anexe em PDF: ${faltando.map(cfg => cfg.rotulo.toLowerCase()).join(' e ')}.`);
-                    }
-                    pacoteAnexos = {
-                        numeroItem: idxPrecatorios + 1,
-                        declaracao: declaracoesParaArquivoPrincipal[idxPrecatorios],
-                        anexos: ANEXOS_PRECATORIOS.map(cfg => ({
-                            titulo: cfg.titulo,
-                            nomeArquivo: anexosState[cfg.chave].nomeArquivo,
-                            paginas: anexosState[cfg.chave].paginas
-                        }))
+                if (!modoAnexos) {
+                    const configuracoes = {
+                        possuiAreaGestora: document.getElementById('possuiAreaGestora')?.checked || false,
+                        apresentaraCertidoes: document.getElementById('apresentaraCertidoes')?.checked || false,
+                        ate65milHabitantes: document.getElementById('ate65milHabitantes')?.checked || false,
+                        regularPrecatorios: document.getElementById('regularPrecatorios')?.checked || false
                     };
-                }
 
-                const arquivos = [];
-                if (declaracoesParaArquivoPrincipal.length > 0) {
-                    arquivos.push({ nome: `Declarações_COM_Envio_ao_TCE_${dados.nome.replace(/\s+/g, '_')}.pdf`, detalhe: '' });
-                }
-                if (declaracoesParaArquivoSeparado.length > 0) {
-                    arquivos.push({ nome: `Declaração_de_Área_Gestora_e_Inexistência_de_Legislação_${dados.nome.replace(/\s+/g, '_')}.pdf`, detalhe: '' });
-                }
-                if (pacoteAnexos) {
-                    const n = pacoteAnexos.numeroItem;
-                    const totalPaginas = pacoteAnexos.anexos.reduce((t, a) => t + a.paginas.length, 0);
-                    arquivos.push({
-                        nome: nomeArquivoAnexos(dados),
-                        detalhe: `Anexos ${n}.1 (comprovante de remessa) e ${n}.2 (comprovante de impossibilidade): índice + ${totalPaginas} ${totalPaginas === 1 ? 'página' : 'páginas'} em imagem.`
+                    const declaracaoTipos = Array.from(document.querySelectorAll('input[name="declaracaoTipo"]:checked')).map(cb => cb.value);
+                    if (declaracaoTipos.length === 0) {
+                        throw new Error('Nenhum tipo de declaração foi selecionado na etapa "Entidade".');
+                    }
+
+                    let todas = [];
+                    declaracaoTipos.forEach(opcao => todas.push(...getDeclaracoes(opcao, dados, configuracoes)));
+                    todas = [...new Map(todas.map(item => [item.id, item])).values()];
+
+                    todas.forEach(decl => {
+                        if (decl.id === 'area_gestora_inexiste_taxa' || decl.id === 'area_gestora_existe_taxa') {
+                            declaracoesParaArquivoSeparado.push(decl);
+                        } else {
+                            declaracoesParaArquivoPrincipal.push(decl);
+                        }
                     });
                 }
 
+                const exigeAnexos = modoAnexos || declaracoesParaArquivoPrincipal.some(d => d.id === 'precatorios_judiciais');
+                if (exigeAnexos && !validarAnexos()) {
+                    throw new Error('Verifique os anexos destacados em vermelho na etapa "Finalizar".');
+                }
+                const anexos = exigeAnexos ? anexosSelecionados() : [];
+
+                // Plano de arquivos (cada um gerado separadamente, sem download automático)
+                const plano = [];
+                if (declaracoesParaArquivoPrincipal.length > 0) {
+                    const n = declaracoesParaArquivoPrincipal.length;
+                    plano.push({
+                        nome: `Declarações_COM_Envio_ao_TCE_${nomeArq}.pdf`,
+                        detalhe: `${n} ${n === 1 ? 'declaração' : 'declarações'}${n > 1 ? ' + folha de assinatura' : ''}.`,
+                        gerar: (wm) => gerarPDFPrincipal(declaracoesParaArquivoPrincipal, dados, wm)
+                    });
+                }
+                declaracoesParaArquivoSeparado.forEach(decl => {
+                    plano.push({
+                        nome: `Declaração_de_Área_Gestora_e_Inexistência_de_Legislação_${nomeArq}.pdf`,
+                        detalhe: decl.id === 'area_gestora_existe_taxa' ? 'Existência de área gestora.' : 'Inexistência de área gestora.',
+                        gerar: (wm) => gerarPDFPrincipal([decl], dados, wm)
+                    });
+                });
+                if (anexos.length > 0) {
+                    const totalPaginas = anexos.reduce((t, a) => t + a.paginas.length, 0);
+                    plano.push({
+                        nome: nomeArquivoAnexos(dados, modoAnexos),
+                        detalhe: `Anexos ${anexos.map(a => a.subnumero).join(', ')}: índice + ${totalPaginas} ${totalPaginas === 1 ? 'página' : 'páginas'} em imagem.`,
+                        gerar: (wm) => gerarPDFAnexos(anexos, dados, wm, { complementacao: modoAnexos })
+                    });
+                }
+
+                if (plano.length === 0) {
+                    throw new Error('Nenhum documento a gerar. Verifique suas seleções e os dados inseridos.');
+                }
+
+                // Confirmação
                 const confirmationPopup = document.getElementById('confirmationPopup');
                 const fileList = document.getElementById('fileList');
                 const confirmDownloadBtn = document.getElementById('confirmDownloadBtn');
                 const cancelPopupBtn = document.getElementById('cancelPopupBtn');
 
-                fileList.innerHTML = arquivos
-                    .map(a => `<li>${escapeHtml(a.nome)}${a.detalhe ? `<small>${escapeHtml(a.detalhe)}</small>` : ''}</li>`)
+                fileList.innerHTML = plano
+                    .map(a => `<li>${escapeHtml(a.nome)}<small>${escapeHtml(a.detalhe)}</small></li>`)
                     .join('');
                 document.getElementById('assinanteResumo').textContent = `${dados.nome} (${dados.cargo})`;
                 confirmationPopup.classList.add('show');
@@ -1772,34 +2012,31 @@
                     };
                     const onConfirm = () => { closeConfirmationPopup(); cleanup(); resolve(); };
                     const onCancel = () => { closeConfirmationPopup(); cleanup(); reject(new Error('Geração de PDFs cancelada pelo usuário.')); };
-
                     confirmDownloadBtn.addEventListener('click', onConfirm, { once: true });
                     cancelPopupBtn.addEventListener('click', onCancel, { once: true });
                 });
 
                 toggleLoading(true, 'Gerando documento(s)...');
                 const watermarkImage = await getBase64ImageFromUrl('https://i.ibb.co/Q7tqVPBb/Folha-Limpa.jpg');
-                let pdfsGerados = 0;
 
-                if (declaracoesParaArquivoPrincipal.length > 0) {
-                    await gerarPDFPrincipal(declaracoesParaArquivoPrincipal, dados, watermarkImage);
-                    pdfsGerados++;
+                const resultados = [];
+                const falhas = [];
+                for (const item of plano) {
+                    try {
+                        const r = await item.gerar(watermarkImage);
+                        resultados.push({ nome: r.nome, blob: r.blob, detalhe: item.detalhe });
+                    } catch (err) {
+                        console.error(`Falha ao gerar ${item.nome}:`, err);
+                        falhas.push(item.nome);
+                    }
                 }
 
-                for (const decl of declaracoesParaArquivoSeparado) {
-                    await gerarPDFDeclaracaoSeparada(decl, dados, watermarkImage);
-                    pdfsGerados++;
+                toggleLoading(false);
+                if (resultados.length) {
+                    mostrarResultados(resultados, `${modoAnexos ? 'Anexos_Complementares' : 'Declarações'}_${nomeArq}.zip`);
                 }
-
-                if (pacoteAnexos) {
-                    await gerarPDFAnexos(pacoteAnexos, dados, watermarkImage);
-                    pdfsGerados++;
-                }
-
-                if (pdfsGerados > 0) {
-                    showPopup();
-                } else {
-                    throw new Error('Nenhuma declaração foi gerada. Verifique suas seleções e os dados inseridos.');
+                if (falhas.length) {
+                    alert(`Não foi possível gerar: ${falhas.join(', ')}. Tente novamente; se persistir, verifique os PDFs anexados.`);
                 }
 
             } catch (error) {
