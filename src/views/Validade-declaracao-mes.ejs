@@ -232,7 +232,8 @@
         label {
             display: block; font-size: .9rem; font-weight: 600; color: var(--text); margin-bottom: 8px;
         }
-        label .req, .req { color: var(--danger); margin-left: 2px; }
+        label .req, .req { color: var(--danger); margin-left: 2px; white-space: nowrap; }
+        .opcional { font-weight: 500; font-size: .85rem; color: var(--text-muted); white-space: nowrap; }
         input[type="text"], select {
             width: 100%; height: 44px; padding: 0 14px;
             background: var(--surface); color: var(--text);
@@ -660,7 +661,8 @@
                         <h2 id="anexosTitulo">Anexos da declaração de precatórios judiciais</h2>
                         <p class="helper" id="anexosHelper">
                             Como o município <strong>não apresentará</strong> as certidões do TJ, do TRT e do TRF, a Declaração de
-                            Regularidade no Pagamento de Precatórios Judiciais só é aceita acompanhada dos dois documentos abaixo
+                            Regularidade no Pagamento de Precatórios Judiciais deve ser acompanhada do comprovante de remessa ao
+                            Tribunal de Contas (1.1, obrigatório). O comprovante de impossibilidade (1.2) é opcional
                             (art. 29, inciso II, c/c § 6º, da Portaria Conjunta MGI/MF/CGU nº 33/2023).
                         </p>
 
@@ -694,7 +696,7 @@
                             </div>
 
                             <div class="form-group upload-group" data-anexo="impossibilidade">
-                                <span class="upload-title"><span class="subitem">1.2</span>Comprovante de impossibilidade de emissão das certidões <span class="req req-fixo" aria-hidden="true">*</span></span>
+                                <span class="upload-title"><span class="subitem">1.2</span>Comprovante de impossibilidade de emissão das certidões <span class="opcional">(opcional)</span></span>
                                 <span class="field-hint">Documento que comprove que as certidões do TJ, do TRT e/ou do TRF não puderam ser emitidas (tela de erro, resposta do tribunal, ofício etc.).</span>
                                 <input type="file" id="anexoImpossibilidade" class="sr-only" accept="application/pdf,.pdf" aria-describedby="erroAnexoImpossibilidade">
                                 <label class="dropzone" for="anexoImpossibilidade">
@@ -1123,6 +1125,7 @@
             {
                 chave: 'remessa',
                 subnumero: '1.1',
+                obrigatorio: true,
                 inputId: 'anexoRemessa',
                 rotulo: 'Comprovante de remessa',
                 titulo: 'COMPROVANTE DE REMESSA DA DECLARAÇÃO AO TRIBUNAL DE CONTAS'
@@ -1130,6 +1133,7 @@
             {
                 chave: 'impossibilidade',
                 subnumero: '1.2',
+                obrigatorio: false,
                 inputId: 'anexoImpossibilidade',
                 rotulo: 'Comprovante de impossibilidade',
                 titulo: 'COMPROVANTE DE IMPOSSIBILIDADE DE EMISSÃO DAS CERTIDÕES JUDICIAIS (TJ, TRT E TRF)'
@@ -1379,7 +1383,7 @@
 
             if (!modoAnexos) {
                 ANEXOS_PRECATORIOS.forEach(cfg => {
-                    if (!anexosState[cfg.chave]) marcar(cfg, `Anexe o ${cfg.rotulo.toLowerCase()} em PDF para continuar.`);
+                    if (cfg.obrigatorio && !anexosState[cfg.chave]) marcar(cfg, `Anexe o ${cfg.rotulo.toLowerCase()} em PDF para continuar.`);
                 });
             }
             anexosExtras.forEach(cfg => {
@@ -1434,7 +1438,7 @@
                 {
                     id: 'apresentaraCertidoes',
                     label: 'O Município apresentará as Certidões emitidas pelo Tribunal de Justiça (TJ), Tribunal Regional do Trabalho (TRT) e Tribunal Regional Federal (TRF)?',
-                    hint: 'Se não marcar, será gerada a Declaração de Regularidade no Pagamento de Precatórios Judiciais e você precisará anexar, em PDF, o comprovante de remessa ao Tribunal de Contas e o comprovante de impossibilidade de emissão das certidões. Esses anexos serão gerados em um arquivo PDF separado.',
+                    hint: 'Se não marcar, será gerada a Declaração de Regularidade no Pagamento de Precatórios Judiciais e você precisará anexar, em PDF, o comprovante de remessa ao Tribunal de Contas (obrigatório) e, se tiver, o comprovante de impossibilidade de emissão das certidões (opcional). Esses anexos serão gerados em um arquivo PDF separado.',
                     show: comissaoChecked
                 },
                 { id: 'ate65milHabitantes', label: 'O município possui até 65 mil habitantes?', show: comissaoChecked },
